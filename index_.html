@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>0xeleven.me // MOSES ATEKA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root {
+  --yellow:   #FCE300;
+  --cyan:     #00F0FF;
+  --magenta:  #FF003C;
+  --orange:   #FF6B00;
+  --bg:       #04050D;
+  --bg2:      #080A16;
+  --bg3:      #0C0F1E;
+  --panel-bg: rgba(8,10,22,0.92);
+  --grid:     rgba(0,240,255,0.04);
+  --text:     #C8D8E8;
+  --dim:      #3A5068;
+  --border-c: rgba(0,240,255,0.18);
+  --border-y: rgba(252,227,0,0.25);
+  --glow-y:   rgba(252,227,0,0.18);
+  --glow-c:   rgba(0,240,255,0.15);
+  --glow-m:   rgba(255,0,60,0.18);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+
+body { cursor: none; }
+#cursor {
+  position:fixed;width:18px;height:18px;pointer-events:none;z-index:99999;
+  border:2px solid var(--yellow);transform:translate(-50%,-50%);
+  transition:transform 0.08s;
+}
+#cursor::after{content:'';position:absolute;inset:3px;background:var(--yellow);opacity:0.5;}
+#cursor-trail {
+  position:fixed;width:6px;height:6px;background:var(--cyan);border-radius:50%;
+  pointer-events:none;z-index:99998;transform:translate(-50%,-50%);
+  transition:left 0.12s ease,top 0.12s ease;box-shadow:0 0 8px var(--cyan);
+}
+
+body {
+  background:var(--bg);color:var(--text);
+  font-family:'Share Tech Mono',monospace;font-size:14px;line-height:1.6;
+  min-height:100vh;overflow-x:hidden;
+}
+
+body::before {
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:40px 40px;z-index:0;pointer-events:none;
+}
+body::after {
+  content:'';position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.12) 3px,rgba(0,0,0,0.12) 4px);
+  z-index:9997;pointer-events:none;
+}
+
+#vhs{position:fixed;inset:0;z-index:9996;pointer-events:none;overflow:hidden;}
+#vhs::before{
+  content:'';position:absolute;left:0;right:0;height:3px;
+  background:rgba(0,240,255,0.35);animation:vline 4s linear infinite;
+  box-shadow:0 0 12px var(--cyan);
+}
+@keyframes vline{0%{top:-10px;opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{top:110%;opacity:0;}}
+
+#cv{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.06;}
+
+.shell{position:relative;z-index:10;max-width:980px;margin:0 auto;padding:0 16px 100px;}
+
+/* TOPBAR */
+.topbar{
+  position:sticky;top:0;z-index:200;
+  background:rgba(4,5,13,0.96);border-bottom:1px solid var(--border-c);
+  backdrop-filter:blur(12px);padding:0 16px;
+  display:flex;align-items:stretch;justify-content:space-between;
+}
+.topbar-brand{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 20px 10px 0;border-right:1px solid var(--border-c);flex-shrink:0;
+}
+.brand-dots{display:flex;gap:6px;}
+.dot{width:10px;height:10px;border-radius:50%;}
+.dot-r{background:#FF003C;box-shadow:0 0 8px #FF003C;}
+.dot-y{background:#FCE300;box-shadow:0 0 8px #FCE300;}
+.dot-g{background:#00F0FF;box-shadow:0 0 8px #00F0FF;}
+.brand-txt{font-family:'Orbitron',monospace;font-weight:900;font-size:12px;color:var(--yellow);letter-spacing:0.12em;text-shadow:0 0 14px var(--yellow);}
+.nav-links{display:flex;align-items:center;overflow-x:auto;}
+.nav-btn{
+  background:none;border:none;border-right:1px solid var(--border-c);
+  color:var(--dim);font-family:'Share Tech Mono',monospace;font-size:11px;
+  letter-spacing:0.08em;padding:0 16px;height:100%;cursor:none;
+  transition:all 0.2s;white-space:nowrap;text-transform:uppercase;
+  position:relative;overflow:hidden;
+}
+.nav-btn::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--yellow);transform:scaleX(0);transition:transform 0.2s;}
+.nav-btn:hover,.nav-btn.active{color:var(--yellow);background:rgba(252,227,0,0.05);text-shadow:0 0 10px var(--yellow);}
+.nav-btn:hover::before,.nav-btn.active::before{transform:scaleX(1);}
+
+/* SECTIONS */
+.section{display:none;animation:fadeIn 0.35s ease;}
+.section.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+/* HERO */
+.hero{padding:40px 0 20px;}
+.hero-ascii{
+  font-family:'VT323',monospace;font-size:clamp(9px,1.8vw,14px);
+  color:rgba(0,240,255,0.2);line-height:1.15;white-space:pre;overflow-x:auto;
+  margin-bottom:28px;letter-spacing:0.04em;
+}
+.glitch-title{
+  font-family:'Orbitron',monospace;font-weight:900;
+  font-size:clamp(26px,6vw,72px);color:var(--yellow);
+  text-transform:uppercase;letter-spacing:0.04em;line-height:1;
+  position:relative;text-shadow:0 0 30px var(--yellow),0 0 60px rgba(252,227,0,0.3);
+  animation:glitch 5s infinite;margin-bottom:4px;
+}
+.glitch-title::before,.glitch-title::after{content:attr(data-text);position:absolute;inset:0;clip-path:polygon(0 30%,100% 30%,100% 50%,0 50%);}
+.glitch-title::before{color:var(--cyan);animation:gtop 5s infinite;text-shadow:none;}
+.glitch-title::after{color:var(--magenta);animation:gbot 5s infinite;text-shadow:none;}
+@keyframes glitch{0%,90%,100%{transform:translate(0);}92%{transform:translate(-2px,1px);}94%{transform:translate(2px,-1px);}96%{transform:translate(-1px,2px);}}
+@keyframes gtop{0%,85%,100%{transform:translate(0);opacity:0;}87%{transform:translate(-4px,0);opacity:1;}89%{transform:translate(4px,0);opacity:1;}91%{opacity:0;}}
+@keyframes gbot{0%,88%,100%{transform:translate(0);opacity:0;}90%{transform:translate(4px,0);opacity:1;}92%{transform:translate(-3px,0);opacity:1;}94%{opacity:0;}}
+
+.hero-sub{font-family:'VT323',monospace;font-size:clamp(18px,3vw,26px);color:var(--cyan);letter-spacing:0.1em;text-shadow:0 0 12px var(--cyan);margin-bottom:24px;}
+
+.boot-term{border:1px solid var(--border-c);background:var(--bg2);padding:16px 20px;margin-bottom:20px;position:relative;}
+.boot-term::before{content:'// SYSTEM BOOT LOG';position:absolute;top:-10px;left:16px;background:var(--bg2);padding:0 8px;font-size:10px;color:var(--cyan);letter-spacing:0.12em;}
+.boot-line{display:flex;gap:12px;margin-bottom:4px;opacity:0;animation:bIn 0.05s ease forwards;font-size:12px;}
+@keyframes bIn{to{opacity:1;}}
+.bt{flex-shrink:0;font-size:10px;letter-spacing:0.08em;min-width:54px;}
+.bt-ok{color:var(--cyan);}
+.bt-w{color:var(--yellow);}
+.bt-e{color:var(--magenta);}
+.bt-i{color:var(--orange);}
+.bv{color:var(--text);}
+.bv em{color:var(--yellow);font-style:normal;}
+.bv b{color:var(--cyan);}
+
+.prompt-row{display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap;}
+.ps1{color:var(--magenta);font-size:13px;flex-shrink:0;text-shadow:0 0 8px var(--magenta);}
+.ps1-user{color:var(--yellow);}
+.ps1-host{color:var(--cyan);}
+.typeout{color:var(--text);font-size:13px;}
+.cur{display:inline-block;width:9px;height:15px;background:var(--yellow);animation:blink 0.9s step-end infinite;vertical-align:middle;box-shadow:0 0 8px var(--yellow);}
+@keyframes blink{50%{opacity:0;}}
+
+.hero-cta{display:flex;gap:10px;margin-top:28px;flex-wrap:wrap;}
+.btn{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;padding:10px 20px;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;display:inline-block;border:none;cursor:none;transition:all 0.2s;position:relative;overflow:hidden;}
+.btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,0.08);transform:translateX(-100%);transition:transform 0.3s;}
+.btn:hover::before{transform:translateX(0);}
+.btn-y{background:var(--yellow);color:var(--bg);box-shadow:0 0 20px rgba(252,227,0,0.4),inset 0 1px 0 rgba(255,255,255,0.3);}
+.btn-y:hover{box-shadow:0 0 40px rgba(252,227,0,0.7);}
+.btn-c{background:transparent;border:1px solid var(--cyan);color:var(--cyan);box-shadow:0 0 10px rgba(0,240,255,0.2);}
+.btn-c:hover{background:rgba(0,240,255,0.08);box-shadow:0 0 20px rgba(0,240,255,0.4);}
+.btn-m{background:transparent;border:1px solid var(--magenta);color:var(--magenta);box-shadow:0 0 10px rgba(255,0,60,0.2);}
+.btn-m:hover{background:rgba(255,0,60,0.08);box-shadow:0 0 20px rgba(255,0,60,0.4);}
+
+.hex-strip{font-family:'VT323',monospace;font-size:11px;color:rgba(252,227,0,0.1);letter-spacing:0.08em;margin:24px 0 8px;overflow:hidden;white-space:nowrap;animation:scrollhex 20s linear infinite;}
+@keyframes scrollhex{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* SECTION HEADER */
+.sec-hd{display:flex;align-items:center;gap:14px;margin:48px 0 20px;position:relative;}
+.sec-hd-num{font-family:'VT323',monospace;font-size:48px;color:rgba(252,227,0,0.07);line-height:1;position:absolute;left:-10px;top:-12px;pointer-events:none;user-select:none;}
+.sec-hd-inner{display:flex;align-items:center;gap:12px;}
+.sec-hd-tag{font-family:'VT323',monospace;font-size:11px;color:var(--magenta);letter-spacing:0.14em;border:1px solid var(--magenta);padding:2px 8px;text-shadow:0 0 8px var(--magenta);}
+.sec-hd-title{font-family:'Orbitron',monospace;font-weight:700;font-size:15px;color:var(--yellow);letter-spacing:0.1em;text-shadow:0 0 16px var(--yellow);}
+.sec-hd-line{flex:1;height:1px;background:linear-gradient(to right,var(--border-y),transparent);}
+
+/* PANELS */
+.panel{border:1px solid var(--border-c);background:var(--panel-bg);padding:20px 24px;margin-bottom:14px;position:relative;overflow:hidden;transition:border-color 0.25s,box-shadow 0.25s;}
+.panel::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--cyan),transparent 60%);opacity:0.6;}
+.panel:hover{border-color:rgba(0,240,255,0.35);box-shadow:0 0 24px var(--glow-c),inset 0 0 30px rgba(0,240,255,0.03);}
+.panel-corner{position:absolute;bottom:0;right:0;width:16px;height:16px;border-top:1px solid var(--border-c);border-left:1px solid var(--border-c);}
+.panel-lbl{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--cyan);margin-bottom:10px;text-shadow:0 0 8px var(--cyan);}
+.panel-title{font-family:'Orbitron',monospace;font-weight:700;font-size:14px;color:var(--yellow);margin-bottom:4px;}
+.panel-sub{color:var(--dim);font-size:12px;margin-bottom:12px;}
+.panel-body{color:var(--text);font-size:13px;line-height:1.75;}
+.hi-y{color:var(--yellow);}
+.hi-c{color:var(--cyan);}
+.hi-m{color:var(--magenta);}
+
+.cdeco{position:absolute;width:12px;height:12px;}
+.cdeco.tl{top:0;left:0;border-top:2px solid var(--yellow);border-left:2px solid var(--yellow);}
+.cdeco.tr{top:0;right:0;border-top:2px solid var(--yellow);border-right:2px solid var(--yellow);}
+.cdeco.bl{bottom:0;left:0;border-bottom:2px solid var(--yellow);border-left:2px solid var(--yellow);}
+.cdeco.br{bottom:0;right:0;border-bottom:2px solid var(--yellow);border-right:2px solid var(--yellow);}
+
+.arr-list{list-style:none;}
+.arr-list li{padding:3px 0;font-size:13px;}
+.arr-list li::before{content:'▸ ';color:var(--magenta);}
+
+.neon-div{height:1px;border:none;margin:20px 0;background:linear-gradient(to right,transparent,var(--cyan),var(--yellow),var(--magenta),transparent);opacity:0.25;}
+
+/* TAGS */
+.tag-cloud{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;}
+.tag{font-size:11px;letter-spacing:0.06em;padding:3px 10px;border:1px solid;transition:all 0.2s;cursor:default;}
+.tag-c{border-color:rgba(0,240,255,0.25);color:var(--cyan);}
+.tag-c:hover{border-color:var(--cyan);box-shadow:0 0 10px var(--glow-c);background:rgba(0,240,255,0.07);}
+.tag-y{border-color:rgba(252,227,0,0.25);color:var(--yellow);}
+.tag-y:hover{border-color:var(--yellow);box-shadow:0 0 10px var(--glow-y);background:rgba(252,227,0,0.07);}
+.tag-m{border-color:rgba(255,0,60,0.25);color:var(--magenta);}
+.tag-m:hover{border-color:var(--magenta);box-shadow:0 0 10px var(--glow-m);background:rgba(255,0,60,0.07);}
+.tag-o{border-color:rgba(255,107,0,0.25);color:var(--orange);}
+.tag-o:hover{border-color:var(--orange);box-shadow:0 0 10px rgba(255,107,0,0.3);}
+
+/* SKILLS */
+.skill-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px 24px;}
+.skill-item{margin-bottom:10px;}
+.skill-row{display:flex;justify-content:space-between;margin-bottom:5px;font-size:12px;}
+.skill-n{color:var(--text);}
+.skill-p{color:var(--yellow);font-weight:700;}
+.skill-bar{height:3px;background:rgba(255,255,255,0.06);position:relative;overflow:visible;}
+.skill-fill{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--yellow));box-shadow:0 0 10px var(--cyan),0 0 20px rgba(0,240,255,0.3);transition:width 1.3s cubic-bezier(0.2,1,0.4,1);position:relative;}
+.skill-fill::after{content:'';position:absolute;right:-3px;top:-3px;width:9px;height:9px;background:var(--yellow);box-shadow:0 0 8px var(--yellow);clip-path:polygon(50% 0%,100% 100%,0% 100%);}
+
+/* CERTS */
+.cert-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;}
+.cert-card{border:1px solid var(--border-c);background:var(--bg2);padding:16px;position:relative;overflow:hidden;transition:all 0.25s;cursor:default;}
+.cert-card::before{content:'';position:absolute;top:0;left:0;width:3px;bottom:0;background:linear-gradient(to bottom,var(--cyan),var(--magenta));opacity:0.5;transition:opacity 0.2s;}
+.cert-card:hover{border-color:rgba(252,227,0,0.4);box-shadow:0 0 20px var(--glow-y);}
+.cert-card:hover::before{opacity:1;}
+.cert-icon{font-size:22px;margin-bottom:8px;}
+.cert-name{color:var(--text);font-size:12px;font-weight:600;margin-bottom:4px;line-height:1.4;}
+.cert-issuer{color:var(--cyan);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;}
+
+/* SOCIALS */
+.social-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
+.social-link{display:flex;align-items:center;gap:14px;border:1px solid var(--border-c);background:var(--bg2);padding:14px 16px;text-decoration:none;transition:all 0.22s;position:relative;overflow:hidden;color:inherit;cursor:none;}
+.social-link::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--yellow));transform:scaleX(0);transition:transform 0.25s;transform-origin:left;}
+.social-link:hover{border-color:var(--border-y);box-shadow:0 0 18px var(--glow-y);}
+.social-link:hover::after{transform:scaleX(1);}
+.social-icon{font-size:24px;flex-shrink:0;}
+.social-name{color:var(--yellow);font-family:'Orbitron',monospace;font-size:10px;font-weight:700;letter-spacing:0.08em;}
+.social-handle{color:var(--dim);font-size:11px;}
+
+/* CONTACT */
+.term-field{width:100%;background:var(--bg3);border:1px solid var(--border-c);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:13px;padding:10px 14px;outline:none;resize:vertical;cursor:none;transition:border-color 0.2s,box-shadow 0.2s;}
+.term-field:focus{border-color:var(--yellow);box-shadow:0 0 12px var(--glow-y);}
+.f-group{margin-bottom:14px;}
+.f-lbl{display:block;font-size:10px;letter-spacing:0.12em;color:var(--cyan);margin-bottom:6px;text-transform:uppercase;}
+
+.contact-row{display:flex;flex-wrap:wrap;gap:20px;border:1px solid var(--border-c);background:var(--bg2);padding:20px 24px;margin-bottom:16px;}
+.ci-lbl{font-size:10px;color:var(--dim);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;}
+.ci-val{color:var(--text);font-size:13px;}
+.ci-val a{color:var(--cyan);text-decoration:none;transition:color 0.2s;}
+.ci-val a:hover{color:var(--yellow);text-shadow:0 0 8px var(--yellow);}
+
+/* STATUS BAR */
+.statusbar{position:fixed;bottom:0;left:0;right:0;z-index:500;background:var(--yellow);color:var(--bg);font-family:'Orbitron',monospace;font-weight:700;font-size:10px;letter-spacing:0.08em;padding:4px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.sb-l{display:flex;align-items:center;gap:12px;overflow:hidden;}
+.sb-mode{background:var(--bg);color:var(--yellow);padding:1px 8px;font-size:9px;flex-shrink:0;}
+.sb-sect{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-r{display:flex;align-items:center;gap:12px;flex-shrink:0;font-size:10px;}
+
+/* FOOTER */
+.footer{border-top:1px solid var(--border-c);margin-top:60px;padding:20px 0;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--dim);}
+.footer em{color:var(--yellow);font-style:normal;}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  .hero-ascii{display:none;}
+  .glitch-title{font-size:clamp(22px,9vw,48px);}
+  .brand-txt{font-size:10px;letter-spacing:0.06em;}
+  .nav-btn{padding:0 10px;font-size:10px;}
+  .cert-grid{grid-template-columns:1fr 1fr;}
+  .social-grid{grid-template-columns:1fr 1fr;}
+  .skill-grid{grid-template-columns:1fr;}
+  .sec-hd-num{display:none;}
+}
+@media(max-width:400px){
+  .cert-grid,.social-grid{grid-template-columns:1fr;}
+  .hero-cta .btn{font-size:9px;padding:9px 14px;}
+  .nav-btn{padding:0 8px;}
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-trail"></div>
+<div id="vhs"></div>
+<canvas id="cv"></canvas>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-dots">
+      <div class="dot dot-r"></div>
+      <div class="dot dot-y"></div>
+      <div class="dot dot-g"></div>
+    </div>
+    <span class="brand-txt">0XELEVEN.ME</span>
+  </div>
+  <nav class="nav-links">
+    <button class="nav-btn active" onclick="show('home')">HOME</button>
+    <button class="nav-btn" onclick="show('about')">ABOUT</button>
+    <button class="nav-btn" onclick="show('skills')">SKILLS</button>
+    <button class="nav-btn" onclick="show('certs')">CERTS</button>
+    <button class="nav-btn" onclick="show('contact')">CONTACT</button>
+  </nav>
+</div>
+
+<div class="shell">
+
+<!-- HOME -->
+<section id="home" class="section active">
+<div class="hero">
+  <div class="hero-ascii">
+██╗  ██╗ █████╗  ██████╗██╗  ██╗███████╗██████╗
+██║  ██║██╔══██╗██╔════╝██║ ██╔╝██╔════╝██╔══██╗
+███████║███████║██║     █████╔╝ █████╗  ██████╔╝
+██╔══██║██╔══██║██║     ██╔═██╗ ██╔══╝  ██╔══██╗
+██║  ██║██║  ██║╚██████╗██║  ██╗███████╗██║  ██║
+╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝</div>
+
+  <h1 class="glitch-title" data-text="MOSES ATEKA">MOSES ATEKA</h1>
+  <p class="hero-sub">// ETHICAL HACKER &amp; CYBER SECURITY SPECIALIST</p>
+
+  <div class="boot-term" id="bootterm"></div>
+
+  <div class="prompt-row">
+    <span class="ps1"><span class="ps1-user">root</span>@<span class="ps1-host">0xeleven</span>:~$</span>
+    <span class="typeout" id="tw"></span>
+    <span class="cur"></span>
+  </div>
+
+  <div class="hero-cta">
+    <a href="#" class="btn btn-y" onclick="show('contact');return false;">ESTABLISH CONNECTION</a>
+    <a href="#" class="btn btn-c" onclick="show('skills');return false;">VIEW SKILL TREE</a>
+    <a href="https://0xeleven.me" target="_blank" class="btn btn-m">ENTER PORTFOLIO</a>
+  </div>
+
+  <div class="hex-strip" id="hstrip"></div>
+</div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="section">
+  <div class="sec-hd">
+    <div class="sec-hd-num">01</div>
+    <div class="sec-hd-inner"><span class="sec-hd-tag">SYS</span><span class="sec-hd-title">IDENTITY.DAT</span></div>
+    <div class="sec-hd-line"></div>
+  </div>
+
+  <div class="panel" style="position:relative;">
+    <div class="cdeco tl"></div><div class="cdeco tr"></div><div class="cdeco bl"></div><div class="cdeco br"></div>
+    <div class="panel-lbl">// WHOAMI</div>
+    <div class="panel-title">MOSES ATEKA</div>
+    <div class="panel-sub">Ethical Hacker · Cyber Security Specialist · Nairobi, Kenya</div>
+    <div class="panel-body">
+      Technologically adept ethical hacker with deep experience across diverse computer systems,
+      security technology, and advanced network architectures. Proven ability to
+      <span class="hi-y">identify and exploit vulnerabilities</span> — then lock them down cold.<br><br>
+      Specialising in <span class="hi-m">red teaming</span>, <span class="hi-c">penetration testing</span>,
+      <span class="hi-y">web application security</span>, and <span class="hi-c">cloud security</span>.
+      Committed to staying ahead of an ever-evolving threat landscape.
+    </div>
+    <div class="panel-corner"></div>
+  </div>
+
+  <div class="sec-hd" style="margin-top:32px;">
+    <div class="sec-hd-inner"><span class="sec-hd-tag">EXP</span><span class="sec-hd-title">EMPLOYMENT.LOG</span></div>
+    <div class="sec-hd-line"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-lbl">// EXPERIENCE</div>
+    <div class="panel-title">SYSTEM ADMINISTRATOR</div>
+    <div class="panel-sub">Legacy Gaming · Nairobi, Kenya · Jan 2022 – Feb 2023</div>
+    <div class="panel-body">
+      <ul class="arr-list">
+        <li>Managed user accounts, passwords &amp; access privileges across enterprise systems</li>
+        <li>Installed, configured &amp; maintained Linux and Windows server infrastructure</li>
+        <li>Implemented security best practices → <span class="hi-y">100% decrease in security incidents</span></li>
+        <li>Performed penetration tests &amp; simulated cyber attacks to surface live vulnerabilities</li>
+      </ul>
+    </div>
+    <div class="panel-corner"></div>
+  </div>
+
+  <div class="sec-hd" style="margin-top:32px;">
+    <div class="sec-hd-inner"><span class="sec-hd-tag">CFG</span><span class="sec-hd-title">LANGUAGES.CONF</span></div>
+    <div class="sec-hd-line"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-lbl">// PROGRAMMING</div>
+    <div class="tag-cloud">
+      <span class="tag tag-y">Python</span><span class="tag tag-y">Bash</span>
+      <span class="tag tag-m">x86-64 Assembly</span><span class="tag tag-c">C#</span><span class="tag tag-c">C</span>
+    </div>
+    <hr class="neon-div">
+    <div class="panel-lbl">// CLOUD PLATFORMS</div>
+    <div class="tag-cloud">
+      <span class="tag tag-c">AWS</span><span class="tag tag-c">Azure</span><span class="tag tag-o">Tencent Cloud</span>
+    </div>
+    <hr class="neon-div">
+    <div class="panel-lbl">// SPOKEN LANGUAGES</div>
+    <div class="tag-cloud">
+      <span class="tag tag-y">English</span><span class="tag tag-y">Swahili</span><span class="tag tag-y">Spanish</span>
+    </div>
+    <div class="panel-corner"></div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills" class="section">
+  <div class="sec-hd">
+    <div class="sec-hd-num">02</div>
+    <div class="sec-hd-inner"><span class="sec-hd-tag">SYS</span><span class="sec-hd-title">SKILL_TREE.EXE</span></div>
+    <div class="sec-hd-line"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-lbl">// OFFENSIVE CAPABILITIES</div>
+    <div class="skill-grid" id="sk-off"></div>
+    <div class="panel-corner"></div>
+  </div>
+  <div class="panel">
+    <div class="panel-lbl">// DEFENSIVE CAPABILITIES</div>
+    <div class="skill-grid" id="sk-def"></div>
+    <div class="panel-corner"></div>
+  </div>
+  <div class="panel">
+    <div class="panel-lbl">// SPECIALISATION MODULES</div>
+    <div class="tag-cloud">
+      <span class="tag tag-m">Red Teaming</span><span class="tag tag-m">Exploit Development</span>
+      <span class="tag tag-m">Buffer Overflow</span><span class="tag tag-m">Privilege Escalation</span>
+      <span class="tag tag-m">Port Redirection</span><span class="tag tag-y">Active Directory Attacks</span>
+      <span class="tag tag-y">Kerberoasting</span><span class="tag tag-y">OSINT</span>
+      <span class="tag tag-y">Social Engineering</span><span class="tag tag-y">Password Cracking</span>
+      <span class="tag tag-c">SIEM</span><span class="tag tag-c">Digital Forensics</span>
+      <span class="tag tag-c">Incident Response</span><span class="tag tag-c">Malware Analysis</span>
+      <span class="tag tag-c">Threat Emulation</span><span class="tag tag-o">Cloud Pentesting</span>
+      <span class="tag tag-o">API Security</span><span class="tag tag-o">DevSecOps</span>
+      <span class="tag tag-o">OWASP Top 10</span><span class="tag tag-o">SAST / DAST</span>
+    </div>
+    <div class="panel-corner"></div>
+  </div>
+</section>
+
+<!-- CERTS -->
+<section id="certs" class="section">
+  <div class="sec-hd">
+    <div class="sec-hd-num">03</div>
+    <div class="sec-hd-inner"><span class="sec-hd-tag">DB</span><span class="sec-hd-title">CREDENTIALS.DB</span></div>
+    <div class="sec-hd-line"></div>
+  </div>
+
+  <div class="cert-grid" id="cg"></div>
+
+  <div class="sec-hd" style="margin-top:32px;">
+    <div class="sec-hd-inner"><span class="sec-hd-tag">PATH</span><span class="sec-hd-title">TRYHACKME_PATHS.TXT</span></div>
+    <div class="sec-hd-line"></div>
+  </div>
+  <div class="panel">
+    <div class="panel-lbl">// COMPLETED LEARNING PATHS</div>
+    <div class="tag-cloud">
+      <span class="tag tag-m">Red Teaming</span><span class="tag tag-c">Cyber Defense</span>
+      <span class="tag tag-c">SOC Level 1</span><span class="tag tag-m">Offensive Pentesting</span>
+      <span class="tag tag-y">Security Engineer</span><span class="tag tag-y">Junior Penetration Tester</span>
+      <span class="tag tag-o">Web Hacking</span><span class="tag tag-o">CompTIA Pentest+</span>
+    </div>
+    <div class="panel-corner"></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="section">
+  <div class="sec-hd">
+    <div class="sec-hd-num">04</div>
+    <div class="sec-hd-inner"><span class="sec-hd-tag">NET</span><span class="sec-hd-title">CONNECT.SH</span></div>
+    <div class="sec-hd-line"></div>
+  </div>
+
+  <div class="contact-row">
+    <div class="ci"><div class="ci-lbl">Location</div><div class="ci-val">📍 Nairobi, Kenya</div></div>
+    <div class="ci"><div class="ci-lbl">Phone</div><div class="ci-val"><a href="tel:+254743603454">+254 743 603 454</a></div></div>
+    <div class="ci"><div class="ci-lbl">Email</div><div class="ci-val"><a href="mailto:mosesateka@gmail.com">mosesateka@gmail.com</a></div></div>
+    <div class="ci"><div class="ci-lbl">Website</div><div class="ci-val"><a href="https://0xeleven.me" target="_blank">0xeleven.me</a></div></div>
+  </div>
+
+  <div class="sec-hd" style="margin-top:20px;">
+    <div class="sec-hd-inner"><span class="sec-hd-tag">SRC</span><span class="sec-hd-title">SOCIAL_LINKS.JSON</span></div>
+    <div class="sec-hd-line"></div>
+  </div>
+
+  <div class="social-grid">
+    <a href="https://0xeleven.me" target="_blank" class="social-link">
+      <div class="social-icon">🌐</div><div><div class="social-name">WEBSITE</div><div class="social-handle">0xeleven.me</div></div>
+    </a>
+    <a href="https://app.hackthebox.com" target="_blank" class="social-link">
+      <div class="social-icon">🟩</div><div><div class="social-name">HACKTHEBOX</div><div class="social-handle">HTB Profile</div></div>
+    </a>
+    <a href="https://tryhackme.com" target="_blank" class="social-link">
+      <div class="social-icon">🔴</div><div><div class="social-name">TRYHACKME</div><div class="social-handle">THM Profile</div></div>
+    </a>
+    <a href="https://twitter.com" target="_blank" class="social-link">
+      <div class="social-icon">🐦</div><div><div class="social-name">TWITTER / X</div><div class="social-handle">@0xeleven</div></div>
+    </a>
+    <a href="mailto:mosesateka@gmail.com" class="social-link">
+      <div class="social-icon">📧</div><div><div class="social-name">EMAIL</div><div class="social-handle">mosesateka@gmail.com</div></div>
+    </a>
+    <a href="tel:+254743603454" class="social-link">
+      <div class="social-icon">📱</div><div><div class="social-name">PHONE</div><div class="social-handle">+254 743 603 454</div></div>
+    </a>
+  </div>
+
+  <div class="sec-hd" style="margin-top:32px;">
+    <div class="sec-hd-inner"><span class="sec-hd-tag">TX</span><span class="sec-hd-title">SEND_PACKET.SH</span></div>
+    <div class="sec-hd-line"></div>
+  </div>
+
+  <div class="panel" style="position:relative;">
+    <div class="cdeco tl"></div><div class="cdeco tr"></div><div class="cdeco bl"></div><div class="cdeco br"></div>
+    <div class="panel-lbl">// ESTABLISH CONNECTION</div>
+    <div class="f-group"><label class="f-lbl">IDENT:</label><input class="term-field" type="text" id="fn" placeholder="anonymous"/></div>
+    <div class="f-group"><label class="f-lbl">RETURN_ADDR:</label><input class="term-field" type="email" id="fe" placeholder="user@domain.tld"/></div>
+    <div class="f-group"><label class="f-lbl">PAYLOAD:</label><textarea class="term-field" rows="4" id="fm" placeholder="Enter your message..."></textarea></div>
+    <button class="btn btn-y" onclick="sendMsg()" style="cursor:none;">TRANSMIT &gt;&gt;</button>
+    <span id="fst" style="margin-left:16px;font-size:12px;color:var(--dim);"></span>
+    <div class="panel-corner"></div>
+  </div>
+</section>
+
+<div class="footer">
+  <span>// <em>MOSES ATEKA</em> · 0xeleven.me</span>
+  <span>Ethical Hacking · Cyber Security · <em>Nairobi 🇰🇪</em></span>
+</div>
+</div>
+
+<!-- STATUS BAR -->
+<div class="statusbar">
+  <div class="sb-l">
+    <span class="sb-mode">NORMAL</span>
+    <span class="sb-sect" id="sb-sect">~/HOME // MOSES ATEKA — ETHICAL HACKER</span>
+  </div>
+  <div class="sb-r"><span id="sb-clock"></span></div>
+</div>
+
+<script>
+// CURSOR
+const cur=document.getElementById('cursor'),trail=document.getElementById('cursor-trail');
+document.addEventListener('mousemove',e=>{
+  cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';
+  setTimeout(()=>{trail.style.left=e.clientX+'px';trail.style.top=e.clientY+'px';},80);
+});
+
+// MATRIX
+const cv=document.getElementById('cv'),cx=cv.getContext('2d');
+let drops=[];
+function rsz(){cv.width=innerWidth;cv.height=innerHeight;drops=Array(Math.floor(cv.width/14)).fill(1);}
+rsz();addEventListener('resize',rsz);
+const chs='01ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄ<>{}[]ABCDEF0123456789#$%&@';
+const clrs=['#FCE300','#00F0FF','#FF003C'];
+function drawM(){
+  cx.fillStyle='rgba(4,5,13,0.05)';cx.fillRect(0,0,cv.width,cv.height);
+  drops.forEach((y,i)=>{
+    cx.fillStyle=clrs[i%3];cx.font='12px VT323';
+    cx.fillText(chs[Math.floor(Math.random()*chs.length)],i*14,y*14);
+    if(y*14>cv.height&&Math.random()>0.975)drops[i]=0;drops[i]++;
+  });
+}
+setInterval(drawM,55);
+
+// HEX STRIP
+const hs='0x4D6F736573 0x417465 6B61 0x45746869 63616C48 61636B65 72 0x4E61 69726F62 69 0xFF003C 0x00F0FF 0xFCE300 0x01 0x00 0x01 0xDEADBEEF 0xCAFEBABE 0xBAADF00D 0x8BADF00D '.repeat(5);
+document.getElementById('hstrip').textContent=hs;
+
+// BOOT
+const boots=[
+  {t:'ok',h:'[  OK  ]',v:'Kernel <em>v6.5.0-cyber</em> — <b>LOADED</b>'},
+  {t:'ok',h:'[  OK  ]',v:'Network stack <em>UP</em> · Firewall <b>ENFORCED</b>'},
+  {t:'ok',h:'[  OK  ]',v:'Identity: <em>Moses Ateka</em> // ETHICAL HACKER'},
+  {t:'ok',h:'[  OK  ]',v:'Location: <b>Nairobi, Kenya</b> · TZ: <em>Africa/Nairobi</em>'},
+  {t:'w', h:'[ WARN ]',v:'Threat detection: <em>ACTIVE</em> — all traffic monitored'},
+  {t:'ok',h:'[  OK  ]',v:'TLS 1.3 handshake <b>COMPLETE</b> · enc: <em>AES-256-GCM</em>'},
+  {t:'i', h:'[ INFO ]',v:'Specialisations: <em>Red Team · PenTest · Cloud · AppSec</em>'},
+  {t:'ok',h:'[  OK  ]',v:'All systems <em>OPERATIONAL</em> — welcome, operator.'},
+];
+const cmap={ok:'bt-ok',w:'bt-w',e:'bt-e',i:'bt-i'};
+function buildBoot(){
+  const el=document.getElementById('bootterm');
+  boots.forEach((d,i)=>{
+    setTimeout(()=>{
+      const r=document.createElement('div');r.className='boot-line';
+      r.innerHTML=`<span class="bt ${cmap[d.t]||'bt-ok'}">${d.h}</span><span class="bv">${d.v}</span>`;
+      el.appendChild(r);
+    },i*110);
+  });
+}
+buildBoot();
+
+// TYPEWRITER
+const phrases=['nmap -sV --script vuln 0xeleven.me','hashcat -m 0 hash.txt wordlist.txt','msfconsole -q -x "use exploit/multi/handler"','echo "Red Team | PenTest | Cloud | AppSec"','python3 exploit.py --target 192.168.1.0/24'];
+let pi=0,ci=0,del=false;
+function tw(){
+  const el=document.getElementById('tw'),p=phrases[pi];
+  if(!del){el.textContent=p.slice(0,++ci);if(ci===p.length){del=true;setTimeout(tw,1800);return;}}
+  else{el.textContent=p.slice(0,--ci);if(ci===0){del=false;pi=(pi+1)%phrases.length;}}
+  setTimeout(tw,del?38:65);
+}
+setTimeout(tw,1300);
+
+// NAV
+const labels={home:'~/HOME',about:'~/ABOUT',skills:'~/SKILLS',certs:'~/CERTS',contact:'~/CONTACT'};
+function show(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>{
+    b.classList.remove('active');
+    if(b.textContent.trim()===id.toUpperCase())b.classList.add('active');
+  });
+  document.getElementById(id).classList.add('active');
+  document.getElementById('sb-sect').textContent=`${labels[id]} // MOSES ATEKA — ETHICAL HACKER`;
+  if(id==='skills')initSkills();
+  window.scrollTo(0,0);
+}
+
+// SKILLS
+const off=[{n:'Penetration Testing',p:92},{n:'Web App Exploitation',p:88},{n:'Network Exploitation',p:85},{n:'Red Teaming',p:82},{n:'Active Directory Attacks',p:80},{n:'Exploit Development',p:75},{n:'Password Cracking',p:87},{n:'Social Engineering',p:78}];
+const def=[{n:'Vulnerability Management',p:88},{n:'System Hardening',p:90},{n:'Incident Response',p:82},{n:'SIEM / Log Analysis',p:78},{n:'Digital Forensics',p:75},{n:'Cloud Security',p:80},{n:'API Security',p:82},{n:'Malware Analysis',p:72}];
+function renderSkills(arr,id){
+  const el=document.getElementById(id);if(el.children.length)return;
+  arr.forEach(s=>{el.innerHTML+=`<div class="skill-item"><div class="skill-row"><span class="skill-n">${s.n}</span><span class="skill-p">${s.p}%</span></div><div class="skill-bar"><div class="skill-fill" data-p="${s.p}"></div></div></div>`;});
+}
+function initSkills(){
+  renderSkills(off,'sk-off');renderSkills(def,'sk-def');
+  setTimeout(()=>{document.querySelectorAll('.skill-fill').forEach(el=>{el.style.width=el.dataset.p+'%';});},100);
+}
+
+// CERTS
+const certs=[
+  {i:'🛡️',n:'Cyber Security Analyst (C3SA)',o:'Cyberwarfare Live'},
+  {i:'🔐',n:'Certified in Cybersecurity (CC)',o:'ISC2'},
+  {i:'⚔️',n:'Certificate in Pentesting (ITE535)',o:'Charles Sturt University'},
+  {i:'🌐',n:'API Security & Penetration Testing',o:'APIsec University'},
+  {i:'📡',n:'CCNA Masterclass',o:'Udemy'},
+  {i:'🔍',n:'Certified AppSec Practitioner (CAP)',o:'The SecOps Group'},
+  {i:'🔒',n:'Certified Network Security Practitioner (CNSP)',o:'The SecOps Group'},
+  {i:'💀',n:'Red Teaming Path',o:'TryHackMe'},
+  {i:'🛡️',n:'SOC Level 1',o:'TryHackMe'},
+  {i:'🔧',n:'Security Engineer Path',o:'TryHackMe'},
+  {i:'🧪',n:'Cyber Defense Path',o:'TryHackMe'},
+  {i:'🎯',n:'Offensive Pentesting Path',o:'TryHackMe'},
+];
+const cg=document.getElementById('cg');
+certs.forEach(c=>{cg.innerHTML+=`<div class="cert-card"><div class="cert-icon">${c.i}</div><div class="cert-name">${c.n}</div><div class="cert-issuer">${c.o}</div></div>`;});
+
+// CLOCK
+function tick(){const n=new Date();document.getElementById('sb-clock').textContent=n.toLocaleDateString('en-GB')+' '+n.toLocaleTimeString('en-GB',{hour12:false})+' | NBI';}
+tick();setInterval(tick,1000);
+
+// FORM
+function sendMsg(){
+  const n=document.getElementById('fn').value.trim(),e=document.getElementById('fe').value.trim(),m=document.getElementById('fm').value.trim(),s=document.getElementById('fst');
+  if(!n||!e||!m){s.style.color='var(--magenta)';s.textContent='[ERR] ALL FIELDS REQUIRED';return;}
+  s.style.color='var(--yellow)';s.textContent='[TX] TRANSMITTING...';
+  setTimeout(()=>{s.style.color='var(--cyan)';s.textContent='[ACK] PACKET RECEIVED. WILL RESPOND SHORTLY.';document.getElementById('fn').value='';document.getElementById('fe').value='';document.getElementById('fm').value='';},1100);
+}
+
+// RANDOM GLITCH FLICKER
+setInterval(()=>{if(Math.random()>0.94){document.body.style.filter='brightness(1.08) contrast(1.05)';setTimeout(()=>document.body.style.filter='',80);}},2000);
+</script>
+</body>
+</html>
