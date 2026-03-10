@@ -119,8 +119,8 @@ We can see that the website is running `Umraco CMS`
 ```
 
 
-![image.png](../images/remote/image.png)
 
+![](/blog/posts/images/remote/image.png)
 
 default creds didn’t work
 
