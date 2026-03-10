@@ -59,13 +59,13 @@ js                      [Status: 301, Size: 309, Words: 20, Lines: 10, Duration:
 `index.php`
 
 
-![screenshot_from_2023-06-09_20-15-04.png](images/bounty-hunter/screenshot_from_2023-06-09_20-15-04.png)
+![screenshot_from_2023-06-09_20-15-04.png](/blog/posts/images/bounty-hunter/screenshot_from_2023-06-09_20-15-04.png)
 
 
 `/resources`
 
 
-![screenshot_2023-06-09_at_17-17-39_index_of__resources.png](images/bounty-hunter/screenshot_2023-06-09_at_17-17-39_index_of__resources.png)
+![screenshot_2023-06-09_at_17-17-39_index_of__resources.png](/blog/posts/images/bounty-hunter/screenshot_2023-06-09_at_17-17-39_index_of__resources.png)
 
 
 `README.txt`
@@ -82,13 +82,13 @@ Tasks:
 `/portal.php`
 
 
-![screenshot_2023-06-09_at_17-23-03_screenshot.png](images/bounty-hunter/screenshot_2023-06-09_at_17-23-03_screenshot.png)
+![screenshot_2023-06-09_at_17-23-03_screenshot.png](/blog/posts/images/bounty-hunter/screenshot_2023-06-09_at_17-23-03_screenshot.png)
 
 
 We follow the links which leads to `/log_submit.php`
 
 
-![screenshot_2023-06-09_at_17-20-08_screenshot.png](images/bounty-hunter/screenshot_2023-06-09_at_17-20-08_screenshot.png)
+![screenshot_2023-06-09_at_17-20-08_screenshot.png](/blog/posts/images/bounty-hunter/screenshot_2023-06-09_at_17-20-08_screenshot.png)
 
 
 We submit random data and capture the request with burp suite interceptor
