@@ -1,5 +1,18 @@
 [
   {
+    "slug": "blue",
+    "title": "Blue",
+    "date": "2026-03-10",
+    "tags": [
+      "ctf",
+      "hackthebox",
+      "easy",
+      "WanaCry",
+      "EternalBlue"
+    ],
+    "excerpt": "CVE-2017-0143, The associated ransomware attack, dubbed \"WannaCry\", is initiated through an SMBv2 remote code execution in Microsoft Windows. This exploit (codenamed \"EternalBlue\") has been made available on the internet through the Shadowbrokers dump on April 14th, 2017"
+  },
+  {
     "slug": "netmon",
     "title": "Netmon",
     "date": "2026-03-10",
