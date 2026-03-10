@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>0xeleven.me // MOSES ATEKA</title>
+<title>xihacks.com // MOSES ATEKA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=VT323&display=swap" rel="stylesheet">
 <style>
@@ -29,17 +29,20 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
 
-body { cursor: none; }
-#cursor {
-  position:fixed;width:18px;height:18px;pointer-events:none;z-index:99999;
-  border:2px solid var(--yellow);transform:translate(-50%,-50%);
-  transition:transform 0.08s;
+/* ── THEMED SVG CURSORS ── */
+/* Default arrow: yellow outlined, cyberpunk arrow shape */
+body {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpolygon points='2,2 2,18 7,13 10,20 13,19 10,12 16,12' fill='%23040510' stroke='%23FCE300' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 2 2, default;
 }
-#cursor::after{content:'';position:absolute;inset:3px;background:var(--yellow);opacity:0.5;}
-#cursor-trail {
-  position:fixed;width:6px;height:6px;background:var(--cyan);border-radius:50%;
-  pointer-events:none;z-index:99998;transform:translate(-50%,-50%);
-  transition:left 0.12s ease,top 0.12s ease;box-shadow:0 0 8px var(--cyan);
+
+/* Pointer (links/buttons): cyan crosshair style */
+body a, body button, .btn, .nav-btn, .social-link, .cert-card, .tag, .post-card {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpolygon points='2,2 2,18 7,13 10,20 13,19 10,12 16,12' fill='%23040510' stroke='%2300F0FF' stroke-width='1.5' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='6' r='3' fill='none' stroke='%23FCE300' stroke-width='1.5'/%3E%3C/svg%3E") 2 2, pointer;
+}
+
+/* Text inputs: cyan I-beam */
+body input, body textarea {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cline x1='10' y1='2' x2='10' y2='18' stroke='%2300F0FF' stroke-width='1.5'/%3E%3Cline x1='6' y1='2' x2='14' y2='2' stroke='%2300F0FF' stroke-width='1.5'/%3E%3Cline x1='6' y1='18' x2='14' y2='18' stroke='%2300F0FF' stroke-width='1.5'/%3E%3C/svg%3E") 10 10, text;
 }
 
 body {
@@ -277,12 +280,35 @@ body::after {
   .hero-cta .btn{font-size:9px;padding:9px 14px;}
   .nav-btn{padding:0 8px;}
 }
+
+/* RECENT POSTS CARDS */
+.rp-card{
+  border:1px solid var(--border-c);background:var(--bg2);
+  padding:16px 18px;position:relative;overflow:hidden;
+  text-decoration:none;display:block;
+  transition:all 0.25s;cursor:pointer;
+}
+.rp-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--yellow));transform:scaleX(0);transform-origin:left;transition:transform 0.3s;}
+.rp-card:hover{border-color:var(--yellow);transform:translateY(-2px);box-shadow:0 8px 24px rgba(252,227,0,0.08);}
+.rp-card:hover::before{transform:scaleX(1);}
+.rp-card-date{font-size:10px;color:var(--dim);letter-spacing:0.1em;margin-bottom:8px;}
+.rp-card-title{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;color:var(--yellow);margin-bottom:8px;line-height:1.3;}
+.rp-card-excerpt{font-size:11px;color:var(--dim);line-height:1.65;margin-bottom:10px;}
+.rp-card-tags{display:flex;flex-wrap:wrap;gap:5px;}
+.rp-tag{font-size:9px;letter-spacing:0.08em;padding:2px 7px;border:1px solid var(--border-c);color:var(--cyan);text-transform:uppercase;}
+.rp-card-arrow{position:absolute;bottom:12px;right:14px;font-size:14px;color:var(--dim);transition:color 0.2s;}
+.rp-card:hover .rp-card-arrow{color:var(--yellow);}
+.rp-skeleton{border:1px solid var(--border-c);padding:16px 18px;animation:skpulse 1.5s ease infinite;}
+@keyframes skpulse{0%,100%{opacity:0.4;}50%{opacity:0.8;}}
+.sk-line{height:10px;background:var(--bg3);margin-bottom:8px;}
+.sk-line.w60{width:60%;}
+.sk-line.w80{width:80%;}
+.sk-line.w40{width:40%;}
 </style>
 </head>
 <body>
 
-<div id="cursor"></div>
-<div id="cursor-trail"></div>
+
 <div id="vhs"></div>
 <canvas id="cv"></canvas>
 
@@ -294,7 +320,7 @@ body::after {
       <div class="dot dot-y"></div>
       <div class="dot dot-g"></div>
     </div>
-    <span class="brand-txt">0XELEVEN.ME</span>
+    <span class="brand-txt">XIHACKS.COM</span>
   </div>
   <nav class="nav-links">
     <button class="nav-btn active" onclick="show('home')">HOME</button>
@@ -302,7 +328,8 @@ body::after {
     <button class="nav-btn" onclick="show('skills')">SKILLS</button>
     <button class="nav-btn" onclick="show('certs')">CERTS</button>
     <button class="nav-btn" onclick="show('contact')">CONTACT</button>
-    <a href="blog/index.html" style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:0.08em;padding:0 16px;height:100%;display:flex;align-items:center;color:var(--magenta);border-left:1px solid var(--border-c);text-decoration:none;text-transform:uppercase;transition:all 0.2s;" onmouseover="this.style.color='var(--yellow)';this.style.background='rgba(252,227,0,0.05)'" onmouseout="this.style.color='var(--magenta)';this.style.background='transparent'">BLOG ▸</a>
+    <button class="nav-btn" onclick="show('blog')">BLOG</button>
+    <a href="blog/index.html" style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:0.08em;padding:0 16px;height:100%;display:flex;align-items:center;color:var(--magenta);border-left:1px solid var(--border-c);text-decoration:none;text-transform:uppercase;transition:all 0.2s;" onmouseover="this.style.color='var(--yellow)';this.style.background='rgba(252,227,0,0.05)'" onmouseout="this.style.color='var(--magenta)';this.style.background='transparent'">ALL POSTS ▸</a>
   </nav>
 </div>
 
@@ -325,7 +352,7 @@ body::after {
   <div class="boot-term" id="bootterm"></div>
 
   <div class="prompt-row">
-    <span class="ps1"><span class="ps1-user">root</span>@<span class="ps1-host">0xeleven</span>:~$</span>
+    <span class="ps1"><span class="ps1-user">root</span>@<span class="ps1-host">xihacks</span>:~$</span>
     <span class="typeout" id="tw"></span>
     <span class="cur"></span>
   </div>
@@ -333,7 +360,7 @@ body::after {
   <div class="hero-cta">
     <a href="#" class="btn btn-y" onclick="show('contact');return false;">ESTABLISH CONNECTION</a>
     <a href="#" class="btn btn-c" onclick="show('skills');return false;">VIEW SKILL TREE</a>
-    <a href="https://0xeleven.me" target="_blank" class="btn btn-m">ENTER PORTFOLIO</a>
+    <a href="https://xihacks.com" target="_blank" class="btn btn-m">ENTER PORTFOLIO</a>
   </div>
 
   <div class="hex-strip" id="hstrip"></div>
@@ -483,7 +510,7 @@ body::after {
     <div class="ci"><div class="ci-lbl">Location</div><div class="ci-val">📍 Nairobi, Kenya</div></div>
     <div class="ci"><div class="ci-lbl">Phone</div><div class="ci-val"><a href="tel:+254743603454">+254 743 603 454</a></div></div>
     <div class="ci"><div class="ci-lbl">Email</div><div class="ci-val"><a href="/cdn-cgi/l/email-protection#14797b6771677560717f75547379757d783a777b79"><span class="__cf_email__" data-cfemail="274a485442544653424c4667404a464e4b0944484a">[email&#160;protected]</span></a></div></div>
-    <div class="ci"><div class="ci-lbl">Website</div><div class="ci-val"><a href="https://0xeleven.me" target="_blank">0xeleven.me</a></div></div>
+    <div class="ci"><div class="ci-lbl">Website</div><div class="ci-val"><a href="https://xihacks.com" target="_blank">xihacks.com</a></div></div>
   </div>
 
   <div class="sec-hd" style="margin-top:20px;">
@@ -492,8 +519,8 @@ body::after {
   </div>
 
   <div class="social-grid">
-    <a href="https://0xeleven.me" target="_blank" class="social-link">
-      <div class="social-icon">🌐</div><div><div class="social-name">WEBSITE</div><div class="social-handle">0xeleven.me</div></div>
+    <a href="https://xihacks.com" target="_blank" class="social-link">
+      <div class="social-icon">🌐</div><div><div class="social-name">WEBSITE</div><div class="social-handle">xihacks.com</div></div>
     </a>
     <a href="https://app.hackthebox.com" target="_blank" class="social-link">
       <div class="social-icon">🟩</div><div><div class="social-name">HACKTHEBOX</div><div class="social-handle">HTB Profile</div></div>
@@ -502,7 +529,7 @@ body::after {
       <div class="social-icon">🔴</div><div><div class="social-name">TRYHACKME</div><div class="social-handle">THM Profile</div></div>
     </a>
     <a href="https://twitter.com" target="_blank" class="social-link">
-      <div class="social-icon">🐦</div><div><div class="social-name">TWITTER / X</div><div class="social-handle">@0xeleven</div></div>
+      <div class="social-icon">🐦</div><div><div class="social-name">TWITTER / X</div><div class="social-handle">@xihacks</div></div>
     </a>
     <a href="/cdn-cgi/l/email-protection#204d4f5345534154454b4160474d41494c0e434f4d" class="social-link">
       <div class="social-icon">📧</div><div><div class="social-name">EMAIL</div><div class="social-handle"><span class="__cf_email__" data-cfemail="137e7c607660726776787253747e727a7f3d707c7e">[email&#160;protected]</span></div></div>
@@ -529,8 +556,22 @@ body::after {
   </div>
 </section>
 
+<!-- BLOG SECTION -->
+<section id="blog" class="section">
+  <div class="sec-hd">
+    <div class="sec-hd-num">05</div>
+    <div class="sec-hd-inner"><span class="sec-hd-tag">LOG</span><span class="sec-hd-title">LATEST_POSTS.LOG</span></div>
+    <div class="sec-hd-line"></div>
+  </div>
+  <div id="rp-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:24px;"></div>
+  <div id="rp-empty" style="display:none;padding:30px 0;text-align:center;color:var(--dim);font-size:12px;letter-spacing:0.08em;">// No posts yet. Start writing in the editor.</div>
+  <div style="text-align:center;margin-top:8px;">
+    <a href="blog/index.html" class="btn btn-c" style="display:inline-block;text-decoration:none;">VIEW ALL POSTS &gt;&gt;</a>
+  </div>
+</section>
+
 <div class="footer">
-  <span>// <em>MOSES ATEKA</em> · 0xeleven.me</span>
+  <span>// <em>MOSES ATEKA</em> · xihacks.com</span>
   <span>Ethical Hacking · Cyber Security · <em>Nairobi 🇰🇪</em></span>
 </div>
 </div>
@@ -545,12 +586,7 @@ body::after {
 </div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-// CURSOR
-const cur=document.getElementById('cursor'),trail=document.getElementById('cursor-trail');
-document.addEventListener('mousemove',e=>{
-  cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';
-  setTimeout(()=>{trail.style.left=e.clientX+'px';trail.style.top=e.clientY+'px';},80);
-});
+
 
 // MATRIX
 const cv=document.getElementById('cv'),cx=cv.getContext('2d');
@@ -598,7 +634,7 @@ function buildBoot(){
 buildBoot();
 
 // TYPEWRITER
-const phrases=['nmap -sV --script vuln 0xeleven.me','hashcat -m 0 hash.txt wordlist.txt','msfconsole -q -x "use exploit/multi/handler"','echo "Red Team | PenTest | Cloud | AppSec"','python3 exploit.py --target 192.168.1.0/24'];
+const phrases=['nmap -sV --script vuln xihacks.com','hashcat -m 0 hash.txt wordlist.txt','msfconsole -q -x "use exploit/multi/handler"','echo "Red Team | PenTest | Cloud | AppSec"','python3 exploit.py --target 192.168.1.0/24'];
 let pi=0,ci=0,del=false;
 function tw(){
   const el=document.getElementById('tw'),p=phrases[pi];
@@ -661,4 +697,62 @@ function sendMsg(){
   const n=document.getElementById('fn').value.trim(),e=document.getElementById('fe').value.trim(),m=document.getElementById('fm').value.trim(),s=document.getElementById('fst');
   if(!n||!e||!m){s.style.color='var(--magenta)';s.textContent='[ERR] ALL FIELDS REQUIRED';return;}
   s.style.color='var(--yellow)';s.textContent='[TX] TRANSMITTING...';
-  setTimeout(()=>{s.style.color='var(--cyan)';s.textContent='[ACK
+  setTimeout(()=>{s.style.color='var(--cyan)';s.textContent='[ACK] RECEIVED. MESSAGE DELIVERED!';},1200);
+}
+
+// SECTION LABELS
+const labels={home:'~/HOME',about:'~/ABOUT',skills:'~/SKILLS',certs:'~/CERTS',contact:'~/CONTACT',blog:'~/BLOG'};
+
+// RECENT POSTS — load from manifest.json
+async function loadRecentPosts() {
+  const grid = document.getElementById('rp-grid');
+  const empty = document.getElementById('rp-empty');
+  // Show skeletons while loading
+  grid.innerHTML = [1,2,3].map(()=>`
+    <div class="rp-skeleton">
+      <div class="sk-line w40"></div>
+      <div class="sk-line w80"></div>
+      <div class="sk-line w60"></div>
+    </div>`).join('');
+  try {
+    const res = await fetch('blog/posts/manifest.json?v='+Date.now());
+    if (!res.ok) throw new Error('No manifest');
+    const posts = await res.json();
+    // Sort by date descending, take top 3
+    const recent = posts
+      .sort((a,b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 3);
+    if (!recent.length) { grid.innerHTML=''; empty.style.display='block'; return; }
+    grid.innerHTML = recent.map(p => `
+      <a class="rp-card" href="blog/post.html?post=${p.slug}">
+        <div class="rp-card-date">${formatDate(p.date)}</div>
+        <div class="rp-card-title">${p.title}</div>
+        <div class="rp-card-excerpt">${p.excerpt}</div>
+        <div class="rp-card-tags">${(p.tags||[]).map(t=>`<span class="rp-tag">${t}</span>`).join('')}</div>
+        <div class="rp-card-arrow">→</div>
+      </a>`).join('');
+  } catch(e) {
+    grid.innerHTML='';
+    empty.style.display='block';
+  }
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  const dt = new Date(d);
+  return dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}).toUpperCase();
+}
+
+// Load posts when blog section is shown
+const _origShow = window.show;
+window.show = function(id) {
+  _origShow && _origShow(id);
+  if (id === 'blog') loadRecentPosts();
+};
+
+// Also load on page start for a peek
+loadRecentPosts();
+
+</script>
+</body>
+</html>
