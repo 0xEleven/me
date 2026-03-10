@@ -1,5 +1,18 @@
 [
   {
+    "slug": "remote",
+    "title": "Remote",
+    "date": "2026-03-10",
+    "tags": [
+      "ctf",
+      "hackthebox",
+      "easy",
+      "Windows",
+      "Password cracking"
+    ],
+    "excerpt": "POC, FTP, Anonymous login, ExploitDB"
+  },
+  {
     "slug": "bounty-hunter",
     "title": "Bounty Hunter",
     "date": "2026-03-10",
