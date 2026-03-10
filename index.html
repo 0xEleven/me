@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>xihacks.com // MOSES ATEKA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root {
+  --yellow:   #FCE300;
+  --cyan:     #00F0FF;
+  --magenta:  #FF003C;
+  --orange:   #FF6B00;
+  --bg:       #04050D;
+  --bg2:      #080A16;
+  --bg3:      #0C0F1E;
+  --panel-bg: rgba(8,10,22,0.92);
+  --grid:     rgba(0,240,255,0.04);
+  --text:     #C8D8E8;
+  --dim:      #3A5068;
+  --border-c: rgba(0,240,255,0.18);
+  --border-y: rgba(252,227,0,0.25);
+  --glow-y:   rgba(252,227,0,0.18);
+  --glow-c:   rgba(0,240,255,0.15);
+  --glow-m:   rgba(255,0,60,0.18);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+
+/* ── THEMED SVG CURSORS ── */
+/* Default arrow: yellow outlined, cyberpunk arrow shape */
+body {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpolygon points='2,2 2,18 7,13 10,20 13,19 10,12 16,12' fill='%23040510' stroke='%23FCE300' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 2 2, default;
+}
+
+/* Pointer (links/buttons): cyan crosshair style */
+body a, body button, .btn, .nav-btn, .social-link, .cert-card, .tag, .post-card {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpolygon points='2,2 2,18 7,13 10,20 13,19 10,12 16,12' fill='%23040510' stroke='%2300F0FF' stroke-width='1.5' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='6' r='3' fill='none' stroke='%23FCE300' stroke-width='1.5'/%3E%3C/svg%3E") 2 2, pointer !important;
+}
+
+/* Text inputs: cyan I-beam */
+body input, body textarea {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cline x1='10' y1='2' x2='10' y2='18' stroke='%2300F0FF' stroke-width='1.5'/%3E%3Cline x1='6' y1='2' x2='14' y2='2' stroke='%2300F0FF' stroke-width='1.5'/%3E%3Cline x1='6' y1='18' x2='14' y2='18' stroke='%2300F0FF' stroke-width='1.5'/%3E%3C/svg%3E") 10 10, text;
+}
+
+body {
+  background:var(--bg);color:var(--text);
+  font-family:'Share Tech Mono',monospace;font-size:14px;line-height:1.6;
+  min-height:100vh;overflow-x:hidden;
+}
+
+body::before {
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:40px 40px;z-index:0;pointer-events:none;
+}
+body::after {
+  content:'';position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.12) 3px,rgba(0,0,0,0.12) 4px);
+  z-index:9997;pointer-events:none;
+}
+
+#vhs{position:fixed;inset:0;z-index:9996;pointer-events:none;overflow:hidden;}
+#vhs::before{
+  content:'';position:absolute;left:0;right:0;height:3px;
+  background:rgba(0,240,255,0.35);animation:vline 4s linear infinite;
+  box-shadow:0 0 12px var(--cyan);
+}
+@keyframes vline{0%{top:-10px;opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{top:110%;opacity:0;}}
+
+#cv{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.06;}
+
+.shell{position:relative;z-index:10;max-width:980px;margin:0 auto;padding:0 16px 100px;}
+
+/* TOPBAR */
+.topbar{
+  position:sticky;top:0;z-index:200;
+  background:rgba(4,5,13,0.96);border-bottom:1px solid var(--border-c);
+  backdrop-filter:blur(12px);padding:0 16px;
+  display:flex;align-items:stretch;justify-content:space-between;
+}
+.topbar-brand{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 20px 10px 0;border-right:1px solid var(--border-c);flex-shrink:0;
+}
+.brand-dots{display:flex;gap:6px;}
+.dot{width:10px;height:10px;border-radius:50%;}
+.dot-r{background:#FF003C;box-shadow:0 0 8px #FF003C;}
+.dot-y{background:#FCE300;box-shadow:0 0 8px #FCE300;}
+.dot-g{background:#00F0FF;box-shadow:0 0 8px #00F0FF;}
+.brand-txt{font-family:'Orbitron',monospace;font-weight:900;font-size:12px;color:var(--yellow);letter-spacing:0.12em;text-shadow:0 0 14px var(--yellow);}
+.nav-links{display:flex;align-items:center;overflow-x:auto;}
+.nav-btn{
+  background:none;border:none;border-right:1px solid var(--border-c);
+  color:var(--dim);font-family:'Share Tech Mono',monospace;font-size:11px;
+  letter-spacing:0.08em;padding:0 16px;height:100%;
+  transition:all 0.2s;white-space:nowrap;text-transform:uppercase;
+  position:relative;overflow:hidden;
+}
+.nav-btn::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--yellow);transform:scaleX(0);transition:transform 0.2s;}
+.nav-btn:hover,.nav-btn.active{color:var(--yellow);background:rgba(252,227,0,0.05);text-shadow:0 0 10px var(--yellow);}
+.nav-btn:hover::before,.nav-btn.active::before{transform:scaleX(1);}
+
+/* HAMBURGER BUTTON */
+.ham-btn{display:none;background:none;border:none;padding:0 16px;height:100%;flex-direction:column;justify-content:center;align-items:center;gap:5px;cursor:pointer;flex-shrink:0;}
+.ham-bar{width:22px;height:2px;background:var(--yellow);transition:all 0.28s cubic-bezier(0.4,0,0.2,1);transform-origin:center;}
+.ham-btn.open .ham-bar:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.ham-btn.open .ham-bar:nth-child(2){opacity:0;transform:scaleX(0);}
+.ham-btn.open .ham-bar:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+/* MOBILE FULL-SCREEN MENU */
+.mob-menu{
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(4,5,13,0.97);z-index:190;
+  flex-direction:column;align-items:stretch;padding-top:64px;
+  backdrop-filter:blur(20px);
+  transform:translateX(100%);transition:transform 0.32s cubic-bezier(0.4,0,0.2,1);
+  display:flex;pointer-events:none;
+}
+.mob-menu.open{transform:translateX(0);pointer-events:all;}
+.mob-menu::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--cyan),var(--yellow),var(--magenta));}
+.mob-nav-btn{
+  background:none;border:none;border-bottom:1px solid rgba(0,240,255,0.08);
+  color:var(--dim);font-family:'Share Tech Mono',monospace;font-size:15px;
+  letter-spacing:0.14em;padding:20px 28px;text-align:left;text-transform:uppercase;
+  transition:all 0.18s;display:flex;align-items:center;justify-content:space-between;
+  border-left:3px solid transparent;
+}
+.mob-nav-btn .mob-num{font-family:'VT323',monospace;font-size:11px;color:var(--border-c);letter-spacing:0.1em;}
+.mob-nav-btn .mob-arrow{font-size:14px;color:var(--border-c);transition:all 0.18s;}
+.mob-nav-btn:hover{color:var(--yellow);background:rgba(252,227,0,0.04);border-left-color:var(--yellow);}
+.mob-nav-btn:hover .mob-arrow{color:var(--yellow);transform:translateX(4px);}
+.mob-nav-btn.active{color:var(--yellow);border-left-color:var(--yellow);background:rgba(252,227,0,0.04);}
+.mob-nav-btn.active .mob-arrow{color:var(--yellow);}
+.mob-foot{padding:20px 28px;margin-top:auto;border-top:1px solid rgba(0,240,255,0.1);}
+.mob-foot-link{display:inline-flex;align-items:center;gap:8px;color:var(--magenta);font-size:13px;letter-spacing:0.1em;text-decoration:none;padding:8px 0;}
+.mob-foot-link:hover{color:var(--yellow);}
+.mob-sect-indicator{font-family:'VT323',monospace;font-size:11px;color:var(--dim);letter-spacing:0.1em;margin-bottom:6px;}
+
+@media(max-width:680px){
+  .nav-links{display:none;}
+  .ham-btn{display:flex;}
+}
+
+/* SECTIONS */
+.section{display:none;animation:fadeIn 0.35s ease;}
+.section.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+/* HERO */
+.hero{padding:40px 0 20px;}
+.hero-ascii{
+  font-family:'VT323',monospace;font-size:clamp(9px,1.8vw,14px);
+  color:rgba(0,240,255,0.2);line-height:1.15;white-space:pre;overflow-x:auto;
+  margin-bottom:28px;letter-spacing:0.04em;
+}
+.glitch-title{
+  font-family:'Orbitron',monospace;font-weight:900;
+  font-size:clamp(26px,6vw,72px);color:var(--yellow);
+  text-transform:uppercase;letter-spacing:0.04em;line-height:1;
+  position:relative;text-shadow:0 0 30px var(--yellow),0 0 60px rgba(252,227,0,0.3);
+  animation:glitch 5s infinite;margin-bottom:4px;
+}
+.glitch-title::before,.glitch-title::after{content:attr(data-text);position:absolute;inset:0;clip-path:polygon(0 30%,100% 30%,100% 50%,0 50%);}
+.glitch-title::before{color:var(--cyan);animation:gtop 5s infinite;text-shadow:none;}
+.glitch-title::after{color:var(--magenta);animation:gbot 5s infinite;text-shadow:none;}
+@keyframes glitch{0%,90%,100%{transform:translate(0);}92%{transform:translate(-2px,1px);}94%{transform:translate(2px,-1px);}96%{transform:translate(-1px,2px);}}
+@keyframes gtop{0%,85%,100%{transform:translate(0);opacity:0;}87%{transform:translate(-4px,0);opacity:1;}89%{transform:translate(4px,0);opacity:1;}91%{opacity:0;}}
+@keyframes gbot{0%,88%,100%{transform:translate(0);opacity:0;}90%{transform:translate(4px,0);opacity:1;}92%{transform:translate(-3px,0);opacity:1;}94%{opacity:0;}}
+
+.hero-sub{font-family:'VT323',monospace;font-size:clamp(18px,3vw,26px);color:var(--cyan);letter-spacing:0.1em;text-shadow:0 0 12px var(--cyan);margin-bottom:24px;}
+
+.boot-term{border:1px solid var(--border-c);background:var(--bg2);padding:16px 20px;margin-bottom:20px;position:relative;max-height:260px;overflow-y:auto;scroll-behavior:smooth;}
+.boot-term::-webkit-scrollbar{width:4px;}
+.boot-term::-webkit-scrollbar-thumb{background:var(--border-c);}
+.boot-term::before{content:'// SYSTEM BOOT LOG';position:absolute;top:-10px;left:16px;background:var(--bg2);padding:0 8px;font-size:10px;color:var(--cyan);letter-spacing:0.12em;}
+.boot-line{display:flex;gap:12px;margin-bottom:4px;opacity:0;animation:bIn 0.05s ease forwards;font-size:12px;}
+@keyframes bIn{to{opacity:1;}}
+.bt{flex-shrink:0;font-size:10px;letter-spacing:0.08em;min-width:54px;}
+.bt-ok{color:var(--cyan);}
+.bt-w{color:var(--yellow);}
+.bt-e{color:var(--magenta);}
+.bt-i{color:var(--orange);}
+.bv{color:var(--text);}
+.bv em{color:var(--yellow);font-style:normal;}
+.bv b{color:var(--cyan);}
+
+.prompt-row{display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap;}
+.ps1{color:var(--magenta);font-size:13px;flex-shrink:0;text-shadow:0 0 8px var(--magenta);}
+.ps1-user{color:var(--yellow);}
+.ps1-host{color:var(--cyan);}
+.typeout{color:var(--text);font-size:13px;}
+.cur{display:inline-block;width:9px;height:15px;background:var(--yellow);animation:blink 0.9s step-end infinite;vertical-align:middle;box-shadow:0 0 8px var(--yellow);}
+@keyframes blink{50%{opacity:0;}}
+
+.hero-cta{display:flex;gap:10px;margin-top:28px;flex-wrap:wrap;}
+.btn{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;padding:10px 20px;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;display:inline-block;border:none;transition:all 0.2s;position:relative;overflow:hidden;}
+.btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,0.08);transform:translateX(-100%);transition:transform 0.3s;}
+.btn:hover::before{transform:translateX(0);}
+.btn-y{background:var(--yellow);color:var(--bg);box-shadow:0 0 20px rgba(252,227,0,0.4),inset 0 1px 0 rgba(255,255,255,0.3);}
+.btn-y:hover{box-shadow:0 0 40px rgba(252,227,0,0.7);}
+.btn-c{background:transparent;border:1px solid var(--cyan);color:var(--cyan);box-shadow:0 0 10px rgba(0,240,255,0.2);}
+.btn-c:hover{background:rgba(0,240,255,0.08);box-shadow:0 0 20px rgba(0,240,255,0.4);}
+.btn-m{background:transparent;border:1px solid var(--magenta);color:var(--magenta);box-shadow:0 0 10px rgba(255,0,60,0.2);}
+.btn-m:hover{background:rgba(255,0,60,0.08);box-shadow:0 0 20px rgba(255,0,60,0.4);}
+
+.hex-strip{font-family:'VT323',monospace;font-size:11px;color:rgba(252,227,0,0.1);letter-spacing:0.08em;margin:24px 0 8px;overflow:hidden;white-space:nowrap;animation:scrollhex 20s linear infinite;}
+@keyframes scrollhex{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* SECTION HEADER */
+.sec-hd{display:flex;align-items:center;gap:14px;margin:48px 0 20px;position:relative;}
+.sec-hd-num{font-family:'VT323',monospace;font-size:48px;color:rgba(252,227,0,0.07);line-height:1;position:absolute;left:-10px;top:-12px;pointer-events:none;user-select:none;}
+.sec-hd-inner{display:flex;align-items:center;gap:12px;}
+.sec-hd-tag{font-family:'VT323',monospace;font-size:11px;color:var(--magenta);letter-spacing:0.14em;border:1px solid var(--magenta);padding:2px 8px;text-shadow:0 0 8px var(--magenta);}
+.sec-hd-title{font-family:'Orbitron',monospace;font-weight:700;font-size:15px;color:var(--yellow);letter-spacing:0.1em;text-shadow:0 0 16px var(--yellow);}
+.sec-hd-line{flex:1;height:1px;background:linear-gradient(to right,var(--border-y),transparent);}
+
+/* PANELS */
+.panel{border:1px solid var(--border-c);background:var(--panel-bg);padding:20px 24px;margin-bottom:14px;position:relative;overflow:hidden;transition:border-color 0.25s,box-shadow 0.25s;}
+.panel::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--cyan),transparent 60%);opacity:0.6;}
+.panel:hover{border-color:rgba(0,240,255,0.35);box-shadow:0 0 24px var(--glow-c),inset 0 0 30px rgba(0,240,255,0.03);}
+.panel-corner{position:absolute;bottom:0;right:0;width:16px;height:16px;border-top:1px solid var(--border-c);border-left:1px solid var(--border-c);}
+.panel-lbl{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--cyan);margin-bottom:10px;text-shadow:0 0 8px var(--cyan);}
+.panel-title{font-family:'Orbitron',monospace;font-weight:700;font-size:14px;color:var(--yellow);margin-bottom:4px;}
+.panel-sub{color:var(--dim);font-size:12px;margin-bottom:12px;}
+.panel-body{color:var(--text);font-size:13px;line-height:1.75;}
+.hi-y{color:var(--yellow);}
+.hi-c{color:var(--cyan);}
+.hi-m{color:var(--magenta);}
+
+.cdeco{position:absolute;width:12px;height:12px;}
+.cdeco.tl{top:0;left:0;border-top:2px solid var(--yellow);border-left:2px solid var(--yellow);}
+.cdeco.tr{top:0;right:0;border-top:2px solid var(--yellow);border-right:2px solid var(--yellow);}
+.cdeco.bl{bottom:0;left:0;border-bottom:2px solid var(--yellow);border-left:2px solid var(--yellow);}
+.cdeco.br{bottom:0;right:0;border-bottom:2px solid var(--yellow);border-right:2px solid var(--yellow);}
+
+.arr-list{list-style:none;}
+.arr-list li{padding:3px 0;font-size:13px;}
+.arr-list li::before{content:'▸ ';color:var(--magenta);}
+
+.neon-div{height:1px;border:none;margin:20px 0;background:linear-gradient(to right,transparent,var(--cyan),var(--yellow),var(--magenta),transparent);opacity:0.25;}
+
+/* TAGS */
+.tag-cloud{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;}
+.tag{font-size:11px;letter-spacing:0.06em;padding:3px 10px;border:1px solid;transition:all 0.2s;cursor:default;}
+.tag-c{border-color:rgba(0,240,255,0.25);color:var(--cyan);}
+.tag-c:hover{border-color:var(--cyan);box-shadow:0 0 10px var(--glow-c);background:rgba(0,240,255,0.07);}
+.tag-y{border-color:rgba(252,227,0,0.25);color:var(--yellow);}
+.tag-y:hover{border-color:var(--yellow);box-shadow:0 0 10px var(--glow-y);background:rgba(252,227,0,0.07);}
+.tag-m{border-color:rgba(255,0,60,0.25);color:var(--magenta);}
+.tag-m:hover{border-color:var(--magenta);box-shadow:0 0 10px var(--glow-m);background:rgba(255,0,60,0.07);}
+.tag-o{border-color:rgba(255,107,0,0.25);color:var(--orange);}
+.tag-o:hover{border-color:var(--orange);box-shadow:0 0 10px rgba(255,107,0,0.3);}
+
+/* SKILLS */
+.skill-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px 24px;}
+.skill-item{margin-bottom:10px;}
+.skill-row{display:flex;justify-content:space-between;margin-bottom:5px;font-size:12px;}
+.skill-n{color:var(--text);}
+.skill-p{color:var(--yellow);font-weight:700;}
+.skill-bar{height:3px;background:rgba(255,255,255,0.06);position:relative;overflow:visible;}
+.skill-fill{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--yellow));box-shadow:0 0 10px var(--cyan),0 0 20px rgba(0,240,255,0.3);transition:width 1.3s cubic-bezier(0.2,1,0.4,1);position:relative;}
+.skill-fill::after{content:'';position:absolute;right:-3px;top:-3px;width:9px;height:9px;background:var(--yellow);box-shadow:0 0 8px var(--yellow);clip-path:polygon(50% 0%,100% 100%,0% 100%);}
+
+/* CERTS */
+.cert-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;}
+.cert-card{border:1px solid var(--border-c);background:var(--bg2);padding:16px;position:relative;overflow:hidden;transition:all 0.25s;cursor:default;}
+.cert-card::before{content:'';position:absolute;top:0;left:0;width:3px;bottom:0;background:linear-gradient(to bottom,var(--cyan),var(--magenta));opacity:0.5;transition:opacity 0.2s;}
+.cert-card:hover{border-color:rgba(252,227,0,0.4);box-shadow:0 0 20px var(--glow-y);}
+.cert-card:hover::before{opacity:1;}
+.cert-icon{font-size:22px;margin-bottom:8px;}
+.cert-name{color:var(--text);font-size:12px;font-weight:600;margin-bottom:4px;line-height:1.4;}
+.cert-issuer{color:var(--cyan);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;}
+
+/* SOCIALS */
+.social-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
+.social-link{display:flex;align-items:center;gap:14px;border:1px solid var(--border-c);background:var(--bg2);padding:14px 16px;text-decoration:none;transition:all 0.22s;position:relative;overflow:hidden;color:inherit;}
+.social-link::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--yellow));transform:scaleX(0);transition:transform 0.25s;transform-origin:left;}
+.social-link:hover{border-color:var(--border-y);box-shadow:0 0 18px var(--glow-y);}
+.social-link:hover::after{transform:scaleX(1);}
+.social-icon{font-size:24px;flex-shrink:0;}
+.social-name{color:var(--yellow);font-family:'Orbitron',monospace;font-size:10px;font-weight:700;letter-spacing:0.08em;}
+.social-handle{color:var(--dim);font-size:11px;}
+
+/* CONTACT */
+.term-field{width:100%;background:var(--bg3);border:1px solid var(--border-c);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:13px;padding:10px 14px;outline:none;resize:vertical;transition:border-color 0.2s,box-shadow 0.2s;}
+.term-field:focus{border-color:var(--yellow);box-shadow:0 0 12px var(--glow-y);}
+.f-group{margin-bottom:14px;}
+.f-lbl{display:block;font-size:10px;letter-spacing:0.12em;color:var(--cyan);margin-bottom:6px;text-transform:uppercase;}
+
+.contact-row{display:flex;flex-wrap:wrap;gap:20px;border:1px solid var(--border-c);background:var(--bg2);padding:20px 24px;margin-bottom:16px;}
+.ci-lbl{font-size:10px;color:var(--dim);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;}
+.ci-val{color:var(--text);font-size:13px;}
+.ci-val a{color:var(--cyan);text-decoration:none;transition:color 0.2s;}
+.ci-val a:hover{color:var(--yellow);text-shadow:0 0 8px var(--yellow);}
+
+/* STATUS BAR */
+.statusbar{position:fixed;bottom:0;left:0;right:0;z-index:500;background:var(--yellow);color:var(--bg);font-family:'Orbitron',monospace;font-weight:700;font-size:10px;letter-spacing:0.08em;padding:4px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.sb-l{display:flex;align-items:center;gap:12px;overflow:hidden;}
+.sb-mode{background:var(--bg);color:var(--yellow);padding:1px 8px;font-size:9px;flex-shrink:0;}
+.sb-sect{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-r{display:flex;align-items:center;gap:12px;flex-shrink:0;font-size:10px;}
+
+/* FOOTER */
+.footer{border-top:1px solid var(--border-c);margin-top:60px;padding:20px 0;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--dim);}
+.footer em{color:var(--yellow);font-style:normal;}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  .hero-ascii{display:none;}
+  .glitch-title{font-size:clamp(22px,9vw,48px);}
+  .brand-txt{font-size:10px;letter-spacing:0.06em;}
+  .nav-btn{padding:0 10px;font-size:10px;}
+  .cert-grid{grid-template-columns:1fr 1fr;}
+  .social-grid{grid-template-columns:1fr 1fr;}
+  .skill-grid{grid-template-columns:1fr;}
+  .sec-hd-num{display:none;}
+}
+@media(max-width:400px){
+  .cert-grid,.social-grid{grid-template-columns:1fr;}
+  .hero-cta .btn{font-size:9px;padding:9px 14px;}
+  .nav-btn{padding:0 8px;}
+}
+
+/* RECENT POSTS CARDS */
+.rp-card{
+  border:1px solid var(--border-c);background:var(--bg2);
+  padding:16px 18px;position:relative;overflow:hidden;
+  text-decoration:none;display:block;
+  transition:all 0.25s;cursor:pointer;
+}
+.rp-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--yellow));transform:scaleX(0);transform-origin:left;transition:transform 0.3s;}
+.rp-card:hover{border-color:var(--yellow);transform:translateY(-2px);box-shadow:0 8px 24px rgba(252,227,0,0.08);}
+.rp-card:hover::before{transform:scaleX(1);}
+.rp-card-date{font-size:10px;color:var(--dim);letter-spacing:0.1em;margin-bottom:8px;}
+.rp-card-title{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;color:var(--yellow);margin-bottom:8px;line-height:1.3;}
+.rp-card-excerpt{font-size:11px;color:var(--dim);line-height:1.65;margin-bottom:10px;}
+.rp-card-tags{display:flex;flex-wrap:wrap;gap:5px;}
+.rp-tag{font-size:9px;letter-spacing:0.08em;padding:2px 7px;border:1px solid var(--border-c);color:var(--cyan);text-transform:uppercase;}
+.rp-card-arrow{position:absolute;bottom:12px;right:14px;font-size:14px;color:var(--dim);transition:color 0.2s;}
+.rp-card:hover .rp-card-arrow{color:var(--yellow);}
+.rp-skeleton{border:1px solid var(--border-c);padding:16px 18px;animation:skpulse 1.5s ease infinite;}
+@keyframes skpulse{0%,100%{opacity:0.4;}50%{opacity:0.8;}}
+.sk-line{height:10px;background:var(--bg3);margin-bottom:8px;}
+.sk-line.w60{width:60%;}
+.sk-line.w80{width:80%;}
+.sk-line.w40{width:40%;}
+</style>
+</head>
+<body>
+
+
+<div id="vhs"></div>
+<canvas id="cv"></canvas>
+
+<!-- MOBILE MENU -->
+<div class="mob-menu" id="mob-menu">
+  <div class="mob-nav-btn active" data-section="home" onclick="mobShow('home')"><span>HOME</span><span class="mob-arrow">▸</span></div>
+  <div class="mob-nav-btn" data-section="about" onclick="mobShow('about')"><span>ABOUT</span><span class="mob-arrow">▸</span></div>
+  <div class="mob-nav-btn" data-section="skills" onclick="mobShow('skills')"><span>SKILLS</span><span class="mob-arrow">▸</span></div>
+  <div class="mob-nav-btn" data-section="certs" onclick="mobShow('certs')"><span>CERTS</span><span class="mob-arrow">▸</span></div>
+  <div class="mob-nav-btn" data-section="contact" onclick="mobShow('contact')"><span>CONTACT</span><span class="mob-arrow">▸</span></div>
+  <div class="mob-nav-btn" data-section="blog" onclick="mobShow('blog')"><span>BLOG</span><span class="mob-arrow">▸</span></div>
+  <div class="mob-foot">
+    <a class="mob-foot-link" href="blog/index.html">📝 ALL BLOG POSTS ▸</a>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-dots">
+      <div class="dot dot-r"></div>
+      <div class="dot dot-y"></div>
+      <div class="dot dot-g"></div>
+    </div>
+    <span class="brand-txt">XIHACKS.COM</span>
+  </div>
+  <nav class="nav-links">
+    <button class="nav-btn active" data-section="home" onclick="show('home')">HOME</button>
+    <button class="nav-btn" data-section="about" onclick="show('about')">ABOUT</button>
+    <button class="nav-btn" data-section="skills" onclick="show('skills')">SKILLS</button>
+    <button class="nav-btn" data-section="certs" onclick="show('certs')">CERTS</button>
+    <button class="nav-btn" data-section="contact" onclick="show('contact')">CONTACT</button>
+    <button class="nav-btn" data-section="blog" onclick="show('blog')">BLOG</button>
+    <a href="blog/index.html" style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:0.08em;padding:0 16px;height:100%;display:flex;align-items:center;color:var(--magenta);border-left:1px solid var(--border-c);text-decoration:none;text-transform:uppercase;transition:all 0.2s;" onmouseover="this.style.color='var(--yellow)';this.style.background='rgba(252,227,0,0.05)'" onmouseout="this.style.color='var(--magenta)';this.style.background='transparent'">ALL POSTS ▸</a>
+    <a href="blog/notion.html" style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:0.08em;padding:0 16px;height:100%;display:flex;align-items:center;color:var(--cyan);border-left:1px solid var(--border-c);text-decoration:none;text-transform:uppercase;transition:all 0.2s;" onmouseover="this.style.color='var(--yellow)';this.style.background='rgba(252,227,0,0.05)'" onmouseout="this.style.color='var(--cyan)';this.style.background='transparent'">NOTES ✦</a>
+  </nav>
+  <button class="ham-btn" id="ham-btn" onclick="toggleMob()" aria-label="Menu">
+    <div class="ham-bar"></div>
+    <div class="ham-bar"></div>
+    <div class="ham-bar"></div>
+  </button>
+</div>
+
+<!-- MOBILE MENU -->
+<div class="mob-menu" id="mob-menu">
+  <div class="mob-sect-indicator" style="padding:0 28px 4px;font-size:10px;color:var(--dim);letter-spacing:0.14em;">// NAVIGATE</div>
+  <button class="mob-nav-btn active" data-section="home" onclick="mobShow('home')">
+    <span style="display:flex;align-items:center;gap:14px;"><span class="mob-num">01</span> HOME</span><span class="mob-arrow">▸</span>
+  </button>
+  <button class="mob-nav-btn" data-section="about" onclick="mobShow('about')">
+    <span style="display:flex;align-items:center;gap:14px;"><span class="mob-num">02</span> ABOUT</span><span class="mob-arrow">▸</span>
+  </button>
+  <button class="mob-nav-btn" data-section="skills" onclick="mobShow('skills')">
+    <span style="display:flex;align-items:center;gap:14px;"><span class="mob-num">03</span> SKILLS</span><span class="mob-arrow">▸</span>
+  </button>
+  <button class="mob-nav-btn" data-section="certs" onclick="mobShow('certs')">
+    <span style="display:flex;align-items:center;gap:14px;"><span class="mob-num">04</span> CERTS</span><span class="mob-arrow">▸</span>
+  </button>
+  <button class="mob-nav-btn" data-section="contact" onclick="mobShow('contact')">
+    <span style="display:flex;align-items:center;gap:14px;"><span class="mob-num">05</span> CONTACT</span><span class="mob-arrow">▸</span>
+  </button>
+  <button class="mob-nav-btn" data-section="blog" onclick="mobShow('blog')">
+    <span style="display:flex;align-items:center;gap:14px;"><span class="mob-num">06</span> BLOG</span><span class="mob-arrow">▸</span>
+  </button>
+  <div class="mob-foot">
+    <a class="mob-foot-link" href="blog/index.html">▸ ALL BLOG POSTS</a><br>
+    <a class="mob-foot-link" href="blog/notion.html" style="color:var(--cyan);">✦ NOTION NOTES</a><br>
+    <span style="font-size:10px;color:var(--dim);letter-spacing:0.1em;">// XIHACKS.COM · MOSES ATEKA · NAIROBI 🇰🇪</span>
+  </div>
+</div>
+
+<!-- HOME -->
+<section id="home" class="section active">
+<div class="hero">
+  <div class="hero-ascii">
+██╗  ██╗ █████╗  ██████╗██╗  ██╗███████╗██████╗
+██║  ██║██╔══██╗██╔════╝██║ ██╔╝██╔════╝██╔══██╗
+███████║███████║██║     █████╔╝ █████╗  ██████╔╝
+██╔══██║██╔══██║██║     ██╔═██╗ ██╔══╝  ██╔══██╗
+██║  ██║██║  ██║╚██████╗██║  ██╗███████╗██║  ██║
+╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝</div>
+
+  <h1 class="glitch-title" data-text="MOSES ATEKA">MOSES ATEKA</h1>
+  <p class="hero-sub">// ETHICAL HACKER &amp; CYBER SECURITY SPECIALIST</p>
+
+  <div class="boot-term" id="bootterm"></div>
+
+  <div class="prompt-row">
+    <span class="ps1"><span class="ps1-user">root</span>@<span class="ps1-host">xihacks</span>:~$</span>
+    <span class="typeout" id="tw"></span>
+    <span class="cur"></span>
+  </div>
+
+  <div class="hero-cta">
+    <a href="#" class="btn btn-y" onclick="show('contact');return false;">ESTABLISH CONNECTION</a>
+    <a href="#" class="btn btn-c" onclick="show('skills');return false;">VIEW SKILL TREE</a>
+    <a href="https://xihacks.com" target="_blank" class="btn btn-m">ENTER PORTFOLIO</a>
+  </div>
+
+  <div class="hex-strip" id="hstrip"></div>
+</div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="section">
+  <div class="sec-hd">
+    <div class="sec-hd-num">01</div>
+    <div class="sec-hd-inner"><span class="sec-hd-tag">SYS</span><span class="sec-hd-title">IDENTITY.DAT</span></div>
+    <div class="sec-hd-line"></div>
+  </div>
+
+  <div class="panel" style="position:relative;">
+    <div class="cdeco tl"></div><div class="cdeco tr"></div><div class="cdeco bl"></div><div class="cdeco br"></div>
+    <div class="panel-lbl">// WHOAMI</div>
+    <div class="panel-title">MOSES ATEKA</div>
+    <div class="panel-sub">Ethical Hacker · Cyber Security Specialist · Nairobi, Kenya</div>
+    <div class="panel-body">
+      Technologically adept ethical hacker with deep experience across diverse computer systems,
+      security technology, and advanced network architectures. Proven ability to
+      <span class="hi-y">identify and exploit vulnerabilities</span> — then lock them down cold.<br><br>
+      Specialising in <span class="hi-m">red teaming</span>, <span class="hi-c">penetration testing</span>,
+      <span class="hi-y">web application security</span>, and <span class="hi-c">cloud security</span>.
+      Committed to staying ahead of an ever-evolving threat landscape.
+    </div>
+    <div class="panel-corner"></div>
+  </div>
+
+  <div class="sec-hd" style="margin-top:32px;">
+    <div class="sec-hd-inner"><span class="sec-hd-tag">EXP</span><span class="sec-hd-title">EMPLOYMENT.LOG</span></div>
+    <div class="sec-hd-line"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-lbl">// EXPERIENCE</div>
+    <div class="panel-title">SYSTEM ADMINISTRATOR</div>
+    <div class="panel-sub">Legacy Gaming · Nairobi, Kenya · Jan 2022 – Feb 2023</div>
+    <div class="panel-body">
+      <ul class="arr-list">
+        <li>Managed user accounts, passwords &amp; access privileges across enterprise systems</li>
+        <li>Installed, configured &amp; maintained Linux and Windows server infrastructure</li>
+        <li>Implemented security best practices → <span class="hi-y">100% decrease in security incidents</span></li>
+        <li>Performed penetration tests &amp; simulated cyber attacks to surface live vulnerabilities</li>
+      </ul>
+    </div>
+    <div class="panel-corner"></div>
+  </div>
+
+  <div class="sec-hd" style="margin-top:32px;">
+    <div class="sec-hd-inner"><span class="sec-hd-tag">CFG</span><span class="sec-hd-title">LANGUAGES.CONF</span></div>
+    <div class="sec-hd-line"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-lbl">// PROGRAMMING</div>
+    <div class="tag-cloud">
+      <span class="tag tag-y">Python</span><span class="tag tag-y">Bash</span>
+      <span class="tag tag-m">x86-64 Assembly</span><span class="tag tag-c">C#</span><span class="tag tag-c">C</span>
+    </div>
+    <hr class="neon-div">
+    <div class="panel-lbl">// CLOUD PLATFORMS</div>
+    <div class="tag-cloud">
+      <span class="tag tag-c">AWS</span><span class="tag tag-c">Azure</span><span class="tag tag-o">Tencent Cloud</span>
+    </div>
+    <hr class="neon-div">
+    <div class="panel-lbl">// SPOKEN LANGUAGES</div>
+    <div class="tag-cloud">
+      <span class="tag tag-y">English</span><span class="tag tag-y">Swahili</span><span class="tag tag-y">Spanish</span>
+    </div>
+    <div class="panel-corner"></div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills" class="section">
+  <div class="sec-hd">
+    <div class="sec-hd-num">02</div>
+    <div class="sec-hd-inner"><span class="sec-hd-tag">SYS</span><span class="sec-hd-title">SKILL_TREE.EXE</span></div>
+    <div class="sec-hd-line"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-lbl">// OFFENSIVE CAPABILITIES</div>
+    <div class="skill-grid" id="sk-off"></div>
+    <div class="panel-corner"></div>
+  </div>
+  <div class="panel">
+    <div class="panel-lbl">// DEFENSIVE CAPABILITIES</div>
+    <div class="skill-grid" id="sk-def"></div>
+    <div class="panel-corner"></div>
+  </div>
+  <div class="panel">
+    <div class="panel-lbl">// SPECIALISATION MODULES</div>
+    <div class="tag-cloud">
+      <span class="tag tag-m">Red Teaming</span><span class="tag tag-m">Exploit Development</span>
+      <span class="tag tag-m">Buffer Overflow</span><span class="tag tag-m">Privilege Escalation</span>
+      <span class="tag tag-m">Port Redirection</span><span class="tag tag-y">Active Directory Attacks</span>
+      <span class="tag tag-y">Kerberoasting</span><span class="tag tag-y">OSINT</span>
+      <span class="tag tag-y">Social Engineering</span><span class="tag tag-y">Password Cracking</span>
+      <span class="tag tag-c">SIEM</span><span class="tag tag-c">Digital Forensics</span>
+      <span class="tag tag-c">Incident Response</span><span class="tag tag-c">Malware Analysis</span>
+      <span class="tag tag-c">Threat Emulation</span><span class="tag tag-o">Cloud Pentesting</span>
+      <span class="tag tag-o">API Security</span><span class="tag tag-o">DevSecOps</span>
+      <span class="tag tag-o">OWASP Top 10</span><span class="tag tag-o">SAST / DAST</span>
+    </div>
+    <div class="panel-corner"></div>
+  </div>
+</section>
+
+<!-- CERTS -->
+<section id="certs" class="section">
+  <div class="sec-hd">
+    <div class="sec-hd-num">03</div>
+    <div class="sec-hd-inner"><span class="sec-hd-tag">DB</span><span class="sec-hd-title">CREDENTIALS.DB</span></div>
+    <div class="sec-hd-line"></div>
+  </div>
+
+  <div class="cert-grid" id="cg"></div>
+
+  <div class="sec-hd" style="margin-top:32px;">
+    <div class="sec-hd-inner"><span class="sec-hd-tag">PATH</span><span class="sec-hd-title">TRYHACKME_PATHS.TXT</span></div>
+    <div class="sec-hd-line"></div>
+  </div>
+  <div class="panel">
+    <div class="panel-lbl">// COMPLETED LEARNING PATHS</div>
+    <div class="tag-cloud">
+      <span class="tag tag-m">Red Teaming</span><span class="tag tag-c">Cyber Defense</span>
+      <span class="tag tag-c">SOC Level 1</span><span class="tag tag-m">Offensive Pentesting</span>
+      <span class="tag tag-y">Security Engineer</span><span class="tag tag-y">Junior Penetration Tester</span>
+      <span class="tag tag-o">Web Hacking</span><span class="tag tag-o">CompTIA Pentest+</span>
+    </div>
+    <div class="panel-corner"></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="section">
+  <div class="sec-hd">
+    <div class="sec-hd-num">04</div>
+    <div class="sec-hd-inner"><span class="sec-hd-tag">NET</span><span class="sec-hd-title">CONNECT.SH</span></div>
+    <div class="sec-hd-line"></div>
+  </div>
+
+  <div class="contact-row">
+    <div class="ci"><div class="ci-lbl">Location</div><div class="ci-val">📍 Nairobi, Kenya</div></div>
+    <div class="ci"><div class="ci-lbl">Phone</div><div class="ci-val"><a href="tel:+254743603454">+254 743 603 454</a></div></div>
+    <div class="ci"><div class="ci-lbl">Email</div><div class="ci-val"><a href="/cdn-cgi/l/email-protection#14797b6771677560717f75547379757d783a777b79"><span class="__cf_email__" data-cfemail="274a485442544653424c4667404a464e4b0944484a">[email&#160;protected]</span></a></div></div>
+    <div class="ci"><div class="ci-lbl">Website</div><div class="ci-val"><a href="https://xihacks.com" target="_blank">xihacks.com</a></div></div>
+  </div>
+
+  <div class="sec-hd" style="margin-top:20px;">
+    <div class="sec-hd-inner"><span class="sec-hd-tag">SRC</span><span class="sec-hd-title">SOCIAL_LINKS.JSON</span></div>
+    <div class="sec-hd-line"></div>
+  </div>
+
+  <div class="social-grid">
+    <a href="https://xihacks.com" target="_blank" class="social-link">
+      <div class="social-icon">🌐</div><div><div class="social-name">WEBSITE</div><div class="social-handle">xihacks.com</div></div>
+    </a>
+    <a href="https://app.hackthebox.com" target="_blank" class="social-link">
+      <div class="social-icon">🟩</div><div><div class="social-name">HACKTHEBOX</div><div class="social-handle">HTB Profile</div></div>
+    </a>
+    <a href="https://tryhackme.com" target="_blank" class="social-link">
+      <div class="social-icon">🔴</div><div><div class="social-name">TRYHACKME</div><div class="social-handle">THM Profile</div></div>
+    </a>
+    <a href="https://twitter.com" target="_blank" class="social-link">
+      <div class="social-icon">🐦</div><div><div class="social-name">TWITTER / X</div><div class="social-handle">@xihacks</div></div>
+    </a>
+    <a href="/cdn-cgi/l/email-protection#204d4f5345534154454b4160474d41494c0e434f4d" class="social-link">
+      <div class="social-icon">📧</div><div><div class="social-name">EMAIL</div><div class="social-handle"><span class="__cf_email__" data-cfemail="137e7c607660726776787253747e727a7f3d707c7e">[email&#160;protected]</span></div></div>
+    </a>
+    <a href="tel:+254743603454" class="social-link">
+      <div class="social-icon">📱</div><div><div class="social-name">PHONE</div><div class="social-handle">+254 743 603 454</div></div>
+    </a>
+  </div>
+
+  <div class="sec-hd" style="margin-top:32px;">
+    <div class="sec-hd-inner"><span class="sec-hd-tag">TX</span><span class="sec-hd-title">SEND_PACKET.SH</span></div>
+    <div class="sec-hd-line"></div>
+  </div>
+
+  <div class="panel" style="position:relative;">
+    <div class="cdeco tl"></div><div class="cdeco tr"></div><div class="cdeco bl"></div><div class="cdeco br"></div>
+    <div class="panel-lbl">// ESTABLISH CONNECTION</div>
+    <div class="f-group"><label class="f-lbl">IDENT:</label><input class="term-field" type="text" id="fn" placeholder="anonymous"/></div>
+    <div class="f-group"><label class="f-lbl">RETURN_ADDR:</label><input class="term-field" type="email" id="fe" placeholder="user@domain.tld"/></div>
+    <div class="f-group"><label class="f-lbl">PAYLOAD:</label><textarea class="term-field" rows="4" id="fm" placeholder="Enter your message..."></textarea></div>
+    <button class="btn btn-y" onclick="sendMsg()">TRANSMIT &gt;&gt;</button>
+    <span id="fst" style="margin-left:16px;font-size:12px;color:var(--dim);"></span>
+    <div class="panel-corner"></div>
+  </div>
+</section>
+
+<!-- BLOG SECTION -->
+<section id="blog" class="section">
+  <div class="sec-hd">
+    <div class="sec-hd-num">05</div>
+    <div class="sec-hd-inner"><span class="sec-hd-tag">LOG</span><span class="sec-hd-title">LATEST_POSTS.LOG</span></div>
+    <div class="sec-hd-line"></div>
+  </div>
+  <div id="rp-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:24px;"></div>
+  <div id="rp-empty" style="display:none;padding:30px 0;text-align:center;color:var(--dim);font-size:12px;letter-spacing:0.08em;">// No posts yet. Start writing in the editor.</div>
+  <div style="text-align:center;margin-top:8px;">
+    <a href="blog/index.html" class="btn btn-c" style="display:inline-block;text-decoration:none;">VIEW ALL POSTS &gt;&gt;</a>
+  </div>
+</section>
+
+<div class="footer">
+  <span>// <em>MOSES ATEKA</em> · xihacks.com</span>
+  <span>Ethical Hacking · Cyber Security · <em>Nairobi 🇰🇪</em></span>
+</div>
+</div>
+
+<!-- STATUS BAR -->
+<div class="statusbar">
+  <div class="sb-l">
+    <span class="sb-mode">NORMAL</span>
+    <span class="sb-sect" id="sb-sect">~/HOME // MOSES ATEKA — ETHICAL HACKER</span>
+  </div>
+  <div class="sb-r"><span id="sb-clock"></span></div>
+</div>
+
+<script>
+// MATRIX
+const cv=document.getElementById('cv'),cx=cv.getContext('2d');
+let drops=[];
+function rsz(){cv.width=innerWidth;cv.height=innerHeight;drops=Array(Math.floor(cv.width/14)).fill(1);}
+rsz();addEventListener('resize',rsz);
+const chs='01ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄ<>{}[]ABCDEF0123456789#$%&@';
+const clrs=['#FCE300','#00F0FF','#FF003C'];
+function drawM(){
+  cx.fillStyle='rgba(4,5,13,0.05)';cx.fillRect(0,0,cv.width,cv.height);
+  drops.forEach((y,i)=>{
+    cx.fillStyle=clrs[i%3];cx.font='12px VT323';
+    cx.fillText(chs[Math.floor(Math.random()*chs.length)],i*14,y*14);
+    if(y*14>cv.height&&Math.random()>0.975)drops[i]=0;drops[i]++;
+  });
+}
+setInterval(drawM,55);
+
+// HEX STRIP
+const hs='0x4D6F736573 0x417465 6B61 0x45746869 63616C48 61636B65 72 0x4E61 69726F62 69 0xFF003C 0x00F0FF 0xFCE300 0x01 0x00 0x01 0xDEADBEEF 0xCAFEBABE 0xBAADF00D 0x8BADF00D '.repeat(5);
+document.getElementById('hstrip').textContent=hs;
+
+// Mobile menu
+function toggleMob(){
+  const btn=document.getElementById('ham-btn');
+  const menu=document.getElementById('mob-menu');
+  btn.classList.toggle('open');
+  menu.classList.toggle('open');
+  document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+}
+function mobShow(id){
+  // Update mobile nav active state
+  document.querySelectorAll('.mob-nav-btn').forEach(b=>{
+    b.classList.toggle('active', b.getAttribute('data-section')===id);
+  });
+  toggleMob(); // close menu
+  show(id);    // show section
+}
+
+
+const LABELS = {
+  home:    '~/HOME    // MOSES ATEKA — ETHICAL HACKER',
+  about:   '~/ABOUT   // IDENTITY.DAT LOADED',
+  skills:  '~/SKILLS  // SKILL_TREE.EXE RUNNING',
+  certs:   '~/CERTS   // CREDENTIALS.DB DECRYPTED',
+  contact: '~/CONTACT // CONNECT.SH INITIALISED',
+  blog:    '~/BLOG    // LATEST_POSTS.LOG',
+};
+function show(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>{
+    b.classList.remove('active');
+    if(b.getAttribute('data-section')===id) b.classList.add('active');
+  });
+  document.querySelectorAll('.mob-nav-btn').forEach(b=>{
+    b.classList.toggle('active', b.getAttribute('data-section')===id);
+  });
+  const sec = document.getElementById(id);
+  if(sec) sec.classList.add('active');
+  const lbl = document.getElementById('sb-sect');
+  if(lbl) lbl.textContent = LABELS[id] || ('~/' + id.toUpperCase());
+  if(id==='skills') initSkills();
+  if(id==='blog') loadRecentPosts();
+  window.scrollTo(0,0);
+}
+
+// SKILLS
+const off=[{n:'Penetration Testing',p:92},{n:'Web App Exploitation',p:88},{n:'Network Exploitation',p:85},{n:'Red Teaming',p:82},{n:'Active Directory Attacks',p:80},{n:'Exploit Development',p:75},{n:'Password Cracking',p:87},{n:'Social Engineering',p:78}];
+const def=[{n:'Vulnerability Management',p:88},{n:'System Hardening',p:90},{n:'Incident Response',p:82},{n:'SIEM / Log Analysis',p:78},{n:'Digital Forensics',p:75},{n:'Cloud Security',p:80},{n:'API Security',p:82},{n:'Malware Analysis',p:72}];
+function renderSkills(arr,id){
+  const el=document.getElementById(id);if(el.children.length)return;
+  arr.forEach(s=>{el.innerHTML+=`<div class="skill-item"><div class="skill-row"><span class="skill-n">${s.n}</span><span class="skill-p">${s.p}%</span></div><div class="skill-bar"><div class="skill-fill" data-p="${s.p}"></div></div></div>`;});
+}
+function initSkills(){
+  renderSkills(off,'sk-off');renderSkills(def,'sk-def');
+  setTimeout(()=>{document.querySelectorAll('.skill-fill').forEach(el=>{el.style.width=el.dataset.p+'%';});},100);
+}
+
+// CERTS
+const certs=[
+  {i:'🛡️',n:'Cyber Security Analyst (C3SA)',o:'Cyberwarfare Live'},
+  {i:'🔐',n:'Certified in Cybersecurity (CC)',o:'ISC2'},
+  {i:'⚔️',n:'Certificate in Pentesting (ITE535)',o:'Charles Sturt University'},
+  {i:'🌐',n:'API Security & Penetration Testing',o:'APIsec University'},
+  {i:'📡',n:'CCNA Masterclass',o:'Udemy'},
+  {i:'🔍',n:'Certified AppSec Practitioner (CAP)',o:'The SecOps Group'},
+  {i:'🔒',n:'Certified Network Security Practitioner (CNSP)',o:'The SecOps Group'},
+  {i:'💀',n:'Red Teaming Path',o:'TryHackMe'},
+  {i:'🛡️',n:'SOC Level 1',o:'TryHackMe'},
+  {i:'🔧',n:'Security Engineer Path',o:'TryHackMe'},
+  {i:'🧪',n:'Cyber Defense Path',o:'TryHackMe'},
+  {i:'🎯',n:'Offensive Pentesting Path',o:'TryHackMe'},
+];
+const cg=document.getElementById('cg');
+certs.forEach(c=>{cg.innerHTML+=`<div class="cert-card"><div class="cert-icon">${c.i}</div><div class="cert-name">${c.n}</div><div class="cert-issuer">${c.o}</div></div>`;});
+
+// CLOCK
+function tick(){const n=new Date();document.getElementById('sb-clock').textContent=n.toLocaleDateString('en-GB')+' '+n.toLocaleTimeString('en-GB',{hour12:false})+' | NBI';}
+tick();setInterval(tick,1000);
+
+// FORM
+function sendMsg(){
+  const n=document.getElementById('fn').value.trim(),e=document.getElementById('fe').value.trim(),m=document.getElementById('fm').value.trim(),s=document.getElementById('fst');
+  if(!n||!e||!m){s.style.color='var(--magenta)';s.textContent='[ERR] ALL FIELDS REQUIRED';return;}
+  s.style.color='var(--yellow)';s.textContent='[TX] TRANSMITTING...';
+  setTimeout(()=>{s.style.color='var(--cyan)';s.textContent='[ACK] RECEIVED. MESSAGE DELIVERED!';},1200);
+}
+
+// TYPEWRITER
+const phrases=['nmap -sV --script vuln target.local','hashcat -m 13100 hashes.txt rockyou.txt','python3 exploit.py --target 10.10.10.1 --lhost 10.10.14.5','msfconsole -q -x "use exploit/multi/handler"','bloodhound-python -d corp.local -u user -p pass -c all','evil-winrm -i 10.10.10.1 -u Administrator -p P@ssw0rd','sudo nmap -A -sV --script=vuln 10.0.0.1/24','echo "Red Team | PenTest | Cloud | AppSec"'];
+let pi=0,ci=0,del=false;
+function tw(){
+  const el=document.getElementById('tw'),p=phrases[pi];
+  if(!del){el.textContent=p.slice(0,++ci);if(ci===p.length){del=true;setTimeout(tw,1800);return;}}
+  else{el.textContent=p.slice(0,--ci);if(ci===0){del=false;pi=(pi+1)%phrases.length;}}
+  setTimeout(tw,del?36:60);
+}
+setTimeout(tw,2800);
+
+// BOOT SEQUENCE — realistic, with recent posts injected later
+const BOOT_BASE = [
+  {t:'ok', h:'[    0.000000]', v:'Linux version <em>6.5.0-xihacks</em> (gcc 13.2.0) #1 SMP'},
+  {t:'ok', h:'[    0.001234]', v:'BIOS-provided physical RAM map — <b>16384MB</b> usable'},
+  {t:'ok', h:'[    0.012891]', v:'ACPI: IRQ0 used by override. <em>Kernel command line loaded.</em>'},
+  {t:'ok', h:'[    0.081203]', v:'Initialising <b>cryptographic subsystem</b> — AES-256-GCM, SHA-3'},
+  {t:'ok', h:'[    0.199441]', v:'Network stack UP · Interface <em>eth0</em> → <b>DHCP lease acquired</b>'},
+  {t:'ok', h:'[    0.241667]', v:'Firewall rules loaded → <em>DROP ALL INBOUND</em>, ALLOW established'},
+  {t:'w',  h:'[    0.388012]', v:'Intrusion detection: <em>ACTIVE</em> — all packets logged'},
+  {t:'ok', h:'[    0.512309]', v:'Loading identity: <em>Moses Ateka</em> // uid=0(root) gid=0(root)'},
+  {t:'ok', h:'[    0.601882]', v:'TLS 1.3 handshake <b>COMPLETE</b> · cert pinned, HSTS enforced'},
+  {t:'ok', h:'[    0.711004]', v:'Specialisations: <em>Red Team · PenTest · Cloud · AppSec</em>'},
+  {t:'i',  h:'[    0.802341]', v:'Location: <b>Nairobi, Kenya</b> · TZ: <em>Africa/Nairobi</em> (EAT +0300)'},
+  {t:'ok', h:'[    0.999999]', v:'All subsystems <em>OPERATIONAL</em> — session started.'},
+];
+
+const cmap={ok:'bt-ok',w:'bt-w',e:'bt-e',i:'bt-i'};
+
+async function buildBoot(){
+  const el=document.getElementById('bootterm');
+  
+  // First fetch posts in the background while boot plays
+  let recentTitles = [];
+  try {
+    const res = await fetch('blog/posts/manifest.json?v='+Date.now());
+    if(res.ok){
+      const posts = await res.json();
+      recentTitles = posts
+        .sort((a,b)=>new Date(b.date)-new Date(a.date))
+        .slice(0,3)
+        .map(p=>p.title);
+    }
+  } catch(e){}
+
+  // Build full boot lines including post log
+  const allBoots = [...BOOT_BASE];
+  
+  if(recentTitles.length){
+    allBoots.push({t:'i', h:'[    1.002100]', v:`Indexing blog: <em>${recentTitles.length} post(s)</em> found in /var/log/xihacks/`});
+    recentTitles.forEach((title, i) => {
+      allBoots.push({t:'ok', h:`[    1.00${3+i}${i}${i}${i}]`, v:`→ <b>${title}</b>`});
+    });
+    allBoots.push({t:'ok', h:'[    1.019991]', v:'Blog index <em>READY</em> · serving at /blog'});
+  } else {
+    allBoots.push({t:'w', h:'[    1.002100]', v:'Blog: <em>no posts found</em> · run editor to publish'});
+  }
+  
+  allBoots.push({t:'ok', h:'[    1.200000]', v:'<em>// XIHACKS.COM IS LIVE — WELCOME, OPERATOR.</em>'});
+
+  allBoots.forEach((d,i)=>{
+    setTimeout(()=>{
+      const r=document.createElement('div');r.className='boot-line';
+      r.style.animationDelay=i*0+'ms';
+      r.innerHTML=`<span class="bt ${cmap[d.t]||'bt-ok'}">${d.h}</span><span class="bv">${d.v}</span>`;
+      el.appendChild(r);
+      // Auto-scroll boot term
+      el.scrollTop = el.scrollHeight;
+    }, i * 90);
+  });
+}
+buildBoot();
+
+// RECENT POSTS for blog section
+async function loadRecentPosts(){
+  const grid=document.getElementById('rp-grid');
+  const empty=document.getElementById('rp-empty');
+  grid.innerHTML=[1,2,3].map(()=>`<div class="rp-skeleton"><div class="sk-line w40"></div><div class="sk-line w80"></div><div class="sk-line w60"></div></div>`).join('');
+  try {
+    const res=await fetch('blog/posts/manifest.json?v='+Date.now());
+    if(!res.ok) throw new Error();
+    const posts=await res.json();
+    const recent=posts.sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,6);
+    if(!recent.length){grid.innerHTML='';empty.style.display='block';return;}
+    grid.innerHTML=recent.map(p=>`
+      <a class="rp-card" href="blog/post.html?post=${p.slug}">
+        <div class="rp-card-date">${fmtDate(p.date)}</div>
+        <div class="rp-card-title">${p.title}</div>
+        <div class="rp-card-excerpt">${p.excerpt}</div>
+        <div class="rp-card-tags">${(p.tags||[]).map(t=>`<span class="rp-tag">${t}</span>`).join('')}</div>
+        <div class="rp-card-arrow">→</div>
+      </a>`).join('');
+  } catch(e){grid.innerHTML='';empty.style.display='block';}
+}
+function fmtDate(d){
+  if(!d) return '';
+  return new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}).toUpperCase();
+}
+
+</script>
+</body>
+</html>
