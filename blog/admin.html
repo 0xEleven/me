@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>XI//EDITOR — XIHACKS BLOG ADMIN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/markdown/markdown.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/shell/shell.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/search.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/searchcursor.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/dialog/dialog.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/dialog/dialog.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/scroll/simplescrollbars.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/scroll/simplescrollbars.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/tomorrow-night.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+:root{
+  --y:#FCE300;--c:#00F0FF;--m:#FF003C;--o:#FF6B00;--g:#00FF88;
+  --bg:#04050D;--bg2:#080A16;--bg3:#0C0F1E;--bg4:#101428;
+  --tx:#C8D8E8;--dim:#3A5068;--dim2:#1A2535;
+  --bc:rgba(0,240,255,0.15);--by:rgba(252,227,0,0.2);
+  --gy:rgba(252,227,0,0.1);--gc:rgba(0,240,255,0.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;background:var(--bg);}
+body{color:var(--tx);font-family:'Share Tech Mono',monospace;font-size:13px;display:flex;flex-direction:column;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.06) 2px,rgba(0,0,0,0.06) 3px);}
+
+/* CODEMIRROR */
+.CodeMirror{height:100%!important;font-family:'Share Tech Mono',monospace!important;font-size:13px!important;line-height:1.75!important;background:var(--bg)!important;color:var(--tx)!important;border:none!important;}
+.CodeMirror-gutters{background:var(--bg2)!important;border-right:1px solid var(--dim2)!important;min-width:44px;}
+.CodeMirror-linenumber{color:var(--dim)!important;font-size:11px!important;padding:0 6px 0 4px!important;}
+.CodeMirror-cursor{border-left:2px solid var(--y)!important;}
+.CodeMirror-selected{background:rgba(252,227,0,0.12)!important;}
+.CodeMirror-line{padding-left:8px!important;}
+.CodeMirror-scroll{padding-bottom:40px;}
+.cm-header{color:var(--y)!important;font-family:'Orbitron',monospace!important;}
+.cm-header-1{font-size:15px!important;}
+.cm-header-2{font-size:14px!important;}
+.cm-strong{color:var(--y)!important;}
+.cm-em{color:var(--c)!important;}
+.cm-link,.cm-url{color:var(--c)!important;}
+.cm-quote{color:var(--dim)!important;font-style:italic;}
+.cm-comment{color:var(--g)!important;}
+.cm-keyword{color:var(--m)!important;}
+.cm-string{color:var(--g)!important;}
+.cm-variable-2{color:var(--c)!important;}
+.cm-hr{color:var(--dim)!important;}
+.cm-formatting-list{color:var(--m)!important;}
+.cm-formatting-header{color:var(--m)!important;}
+.CodeMirror-simplescroll-vscrollbar div{background:var(--dim2)!important;border-radius:2px!important;}
+.CodeMirror-dialog{background:var(--bg2)!important;border-bottom:1px solid var(--bc)!important;color:var(--tx)!important;padding:6px 12px!important;}
+.CodeMirror-dialog input{background:var(--bg3)!important;border:1px solid var(--bc)!important;color:var(--tx)!important;font-family:'Share Tech Mono',monospace!important;outline:none!important;padding:3px 8px!important;}
+
+/* TOPBAR */
+.topbar{flex-shrink:0;height:46px;background:rgba(4,5,13,0.98);border-bottom:1px solid var(--bc);display:flex;align-items:stretch;z-index:100;}
+.tb-brand{display:flex;align-items:center;gap:10px;padding:0 16px;border-right:1px solid var(--bc);flex-shrink:0;}
+.brand-dots{display:flex;gap:5px;}
+.dot{width:9px;height:9px;border-radius:50%;}
+.dot-r{background:#FF003C;box-shadow:0 0 6px #FF003C;}
+.dot-y{background:#FCE300;box-shadow:0 0 6px #FCE300;}
+.dot-g{background:#00F0FF;box-shadow:0 0 6px #00F0FF;}
+.bname{font-family:'Orbitron',monospace;font-weight:900;font-size:11px;color:var(--y);letter-spacing:0.14em;text-shadow:0 0 12px var(--y);}
+.btag{font-family:'VT323',monospace;font-size:14px;color:var(--m);margin-left:4px;}
+.toolbar{display:flex;align-items:center;flex:1;overflow-x:auto;gap:0;}
+.tsep{width:1px;background:var(--bc);height:55%;flex-shrink:0;margin:0 2px;}
+.tbtn{background:none;border:none;color:var(--dim);font-family:'Share Tech Mono',monospace;font-size:11px;padding:0 10px;height:100%;cursor:pointer;transition:all 0.15s;white-space:nowrap;display:flex;align-items:center;gap:5px;letter-spacing:0.04em;position:relative;}
+.tbtn::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--y);transform:scaleX(0);transition:transform 0.15s;}
+.tbtn:hover{color:var(--y);background:var(--gy);}
+.tbtn:hover::after,.tbtn.on::after{transform:scaleX(1);}
+.tbtn.on{color:var(--y);background:var(--gy);}
+.tbtn.tc:hover{color:var(--c);}
+.tbtn.tc:hover::after{background:var(--c);}
+.tbtn.tm:hover{color:var(--m);}
+.tbtn.tm:hover::after{background:var(--m);}
+.tbtn.tg{color:var(--g)!important;}
+.tbtn.tg::after{background:var(--g)!important;}
+.tb-right{display:flex;align-items:center;border-left:1px solid var(--bc);flex-shrink:0;}
+.tb-stat{padding:0 12px;font-size:10px;color:var(--dim);letter-spacing:0.06em;display:flex;align-items:center;gap:8px;border-right:1px solid var(--bc);}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--g);box-shadow:0 0 6px var(--g);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+/* FRONTMATTER */
+.fm-bar{flex-shrink:0;background:var(--bg2);border-bottom:1px solid var(--bc);padding:9px 14px;display:grid;grid-template-columns:2fr 140px 1fr 1fr;gap:8px;align-items:end;}
+.fmf{display:flex;flex-direction:column;gap:3px;}
+.fml{font-size:9px;letter-spacing:0.14em;color:var(--c);text-transform:uppercase;}
+.fmi{background:var(--bg3);border:1px solid var(--bc);color:var(--tx);font-family:'Share Tech Mono',monospace;font-size:12px;padding:5px 9px;outline:none;width:100%;transition:border-color 0.2s;}
+.fmi:focus{border-color:var(--y);box-shadow:0 0 8px var(--gy);}
+.fmi::placeholder{color:var(--dim);}
+.slug-p{font-size:10px;color:var(--m);margin-top:1px;min-height:13px;}
+
+/* WORKSPACE */
+.workspace{flex:1;display:grid;grid-template-columns:1fr 1fr;overflow:hidden;min-height:0;}
+.workspace.fe .pvcol{display:none;}
+.workspace.fe .edcol{grid-column:1/-1;}
+.workspace.fp .edcol{display:none;}
+.workspace.fp .pvcol{grid-column:1/-1;}
+
+/* EDITOR COL */
+.edcol{display:flex;flex-direction:column;border-right:1px solid var(--bc);overflow:hidden;min-height:0;position:relative;}
+.colhead{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:5px 10px;background:var(--bg2);border-bottom:1px solid var(--bc);}
+.collbl{font-size:9px;letter-spacing:0.14em;color:var(--c);text-transform:uppercase;}
+.colact{display:flex;gap:5px;}
+.cabtn{background:none;border:1px solid var(--bc);color:var(--dim);font-family:'Share Tech Mono',monospace;font-size:10px;padding:2px 8px;cursor:pointer;transition:all 0.15s;}
+.cabtn:hover{border-color:var(--c);color:var(--c);}
+.cmwrap{flex:1;overflow:hidden;display:flex;flex-direction:column;position:relative;}
+.cmwrap .CodeMirror{flex:1;}
+.cmwrap .CodeMirror-scroll{overflow-y:auto!important;}
+
+/* drag overlay */
+.doverlay{position:absolute;inset:0;background:rgba(0,240,255,0.06);border:2px dashed var(--c);display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;z-index:20;pointer-events:none;}
+.doverlay.show{display:flex;}
+.doi{font-size:36px;}
+.dot2{font-family:'Orbitron',monospace;font-size:11px;color:var(--c);letter-spacing:0.1em;}
+
+/* PREVIEW COL */
+.pvcol{display:flex;flex-direction:column;overflow:hidden;}
+.pvscroll{flex:1;overflow-y:auto;padding:24px 32px;background:var(--bg);}
+.pvscroll::-webkit-scrollbar{width:5px;}
+.pvscroll::-webkit-scrollbar-thumb{background:var(--dim2);}
+
+/* PREVIEW CONTENT */
+#pv h1{font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(18px,2.5vw,26px);color:var(--y);text-shadow:0 0 16px var(--y);border-bottom:1px solid var(--by);padding-bottom:10px;margin:0 0 18px;}
+#pv h2{font-family:'Orbitron',monospace;font-weight:700;font-size:16px;color:var(--c);padding-left:12px;position:relative;margin:26px 0 12px;}
+#pv h2::before{content:'';position:absolute;left:0;top:1px;bottom:1px;width:3px;background:var(--c);}
+#pv h3{font-family:'Orbitron',monospace;font-weight:700;font-size:13px;color:var(--y);opacity:0.85;margin:20px 0 8px;}
+#pv h4{font-family:'Orbitron',monospace;font-size:12px;color:var(--m);margin:16px 0 6px;}
+#pv p{color:var(--tx);font-size:13px;line-height:1.85;margin:0 0 14px;}
+#pv a{color:var(--c);text-decoration:none;border-bottom:1px solid rgba(0,240,255,0.3);}
+#pv strong{color:var(--y);}
+#pv em{color:var(--c);font-style:italic;}
+#pv ul,#pv ol{margin:0 0 14px;padding-left:0;}
+#pv ul li,#pv ol li{padding:3px 0 3px 18px;position:relative;font-size:13px;color:var(--tx);}
+#pv ul li::before{content:'▸';position:absolute;left:0;color:var(--m);}
+#pv ol{counter-reset:ol;}
+#pv ol li{counter-increment:ol;}
+#pv ol li::before{content:counter(ol)'.';position:absolute;left:0;color:var(--y);font-weight:700;}
+#pv blockquote{border-left:3px solid var(--y);background:var(--bg2);padding:12px 16px;margin:14px 0;}
+#pv blockquote p{margin:0;font-style:italic;}
+#pv code{background:var(--bg3);color:var(--c);padding:1px 5px;font-family:'Share Tech Mono',monospace;font-size:12px;border:1px solid var(--bc);}
+#pv pre{margin:14px 0;border:1px solid var(--bc);}
+#pv pre code{background:transparent;padding:0;border:none;display:block;}
+#pv pre .hljs{background:var(--bg2);padding:14px;overflow-x:auto;font-size:12px;line-height:1.6;}
+#pv table{width:100%;border-collapse:collapse;margin:14px 0;font-size:12px;}
+#pv th{background:var(--bg2);color:var(--y);font-family:'Orbitron',monospace;font-size:10px;letter-spacing:0.08em;padding:7px 10px;border:1px solid var(--bc);text-align:left;}
+#pv td{padding:6px 10px;border:1px solid var(--bc);color:var(--tx);}
+#pv tr:hover td{background:rgba(0,240,255,0.03);}
+#pv hr{border:none;height:1px;background:linear-gradient(to right,transparent,var(--c),var(--y),var(--m),transparent);opacity:0.3;margin:24px 0;}
+#pv img{max-width:100%;border:1px solid var(--bc);display:block;margin:14px auto;box-shadow:0 0 18px rgba(0,240,255,0.08);}
+
+/* IMAGE DRAWER */
+.imgd{position:fixed;right:0;top:46px;bottom:24px;width:258px;background:var(--bg2);border-left:1px solid var(--bc);z-index:200;transform:translateX(100%);transition:transform 0.28s ease;display:flex;flex-direction:column;}
+.imgd.open{transform:translateX(0);}
+.idhead{padding:9px 13px;border-bottom:1px solid var(--bc);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.idtitle{font-family:'Orbitron',monospace;font-size:10px;color:var(--y);letter-spacing:0.1em;}
+.idclose{background:none;border:none;color:var(--dim);cursor:pointer;font-size:15px;line-height:1;transition:color 0.15s;}
+.idclose:hover{color:var(--m);}
+.idup{margin:9px;border:2px dashed var(--bc);padding:14px;text-align:center;cursor:pointer;transition:all 0.2s;flex-shrink:0;position:relative;}
+.idup:hover,.idup.over{border-color:var(--c);background:var(--gc);}
+.idup input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.idup-icon{font-size:22px;display:block;margin-bottom:3px;}
+.idup-txt{font-size:10px;color:var(--dim);line-height:1.5;}
+.idup-txt em{color:var(--c);font-style:normal;}
+.idlist{flex:1;overflow-y:auto;padding:5px;}
+.idlist::-webkit-scrollbar{width:4px;}
+.idlist::-webkit-scrollbar-thumb{background:var(--dim2);}
+.idempty{text-align:center;padding:20px 10px;color:var(--dim);font-size:11px;line-height:1.6;}
+.iditem{display:flex;align-items:center;gap:7px;padding:7px;border:1px solid var(--bc);background:var(--bg3);margin-bottom:5px;cursor:pointer;transition:all 0.2s;position:relative;}
+.iditem:hover{border-color:var(--y);box-shadow:0 0 8px var(--gy);}
+.idthumb{width:44px;height:34px;object-fit:cover;flex-shrink:0;border:1px solid var(--bc);}
+.idinfo{flex:1;min-width:0;}
+.idname{font-size:10px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.idsz{font-size:9px;color:var(--dim);}
+.idhint{font-size:9px;color:var(--c);margin-top:1px;}
+.iddel{position:absolute;top:3px;right:3px;background:none;border:none;color:var(--dim);cursor:pointer;font-size:11px;padding:1px 3px;transition:color 0.15s;line-height:1;}
+.iddel:hover{color:var(--m);}
+
+/* MODAL */
+.mbg{position:fixed;inset:0;background:rgba(4,5,13,0.9);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
+.mbg.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--by);width:min(760px,96vw);max-height:88vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 0 80px var(--gy);position:relative;}
+.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--c),var(--y),var(--m));}
+.mhead{padding:13px 17px;border-bottom:1px solid var(--bc);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.mtitle{font-family:'Orbitron',monospace;font-weight:700;font-size:12px;color:var(--y);letter-spacing:0.1em;}
+.mx{background:none;border:none;color:var(--dim);cursor:pointer;font-size:18px;line-height:1;transition:color 0.15s;}
+.mx:hover{color:var(--m);}
+.mbody{padding:16px;overflow-y:auto;flex:1;}
+.mbody::-webkit-scrollbar{width:5px;}
+.mbody::-webkit-scrollbar-thumb{background:var(--dim2);}
+.mtabs{display:flex;border-bottom:1px solid var(--bc);margin-bottom:14px;}
+.mtab{padding:7px 14px;font-size:11px;letter-spacing:0.07em;color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;}
+.mtab.on{color:var(--y);border-bottom-color:var(--y);}
+.msec{display:none;}
+.msec.on{display:block;}
+.outlbl{font-size:9px;letter-spacing:0.14em;color:var(--c);text-transform:uppercase;margin-bottom:4px;}
+.outbox{background:var(--bg3);border:1px solid var(--bc);padding:11px 13px;font-size:11px;line-height:1.65;color:var(--tx);white-space:pre-wrap;word-break:break-all;max-height:200px;overflow-y:auto;margin-bottom:10px;font-family:'Share Tech Mono',monospace;}
+.outbox::-webkit-scrollbar{width:4px;}
+.outbox::-webkit-scrollbar-thumb{background:var(--dim2);}
+.brow{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;}
+.xbtn{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;padding:7px 14px;letter-spacing:0.1em;text-transform:uppercase;border:1px solid;cursor:pointer;transition:all 0.2s;background:none;}
+.xy{border-color:var(--y);color:var(--y);}
+.xy:hover{background:var(--y);color:var(--bg);box-shadow:0 0 14px var(--gy);}
+.xc{border-color:var(--c);color:var(--c);}
+.xc:hover{background:var(--c);color:var(--bg);}
+.xg{border-color:var(--g);color:var(--g);}
+.xg:hover{background:var(--g);color:var(--bg);}
+.xm{border-color:var(--m);color:var(--m);}
+.xm:hover{background:var(--m);color:var(--bg);}
+.pstep{display:flex;gap:11px;padding:9px 0;border-bottom:1px solid var(--dim2);align-items:flex-start;}
+.pstep:last-child{border-bottom:none;}
+.pnum{width:20px;height:20px;background:var(--y);color:var(--bg);font-family:'Orbitron',monospace;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.ptxt{font-size:12px;color:var(--tx);line-height:1.65;}
+.ptxt code{background:var(--bg3);color:var(--c);padding:1px 5px;border:1px solid var(--bc);font-size:11px;}
+.ptxt em{color:var(--y);font-style:normal;}
+.pbanner{background:rgba(0,255,136,0.07);border:1px solid var(--g);padding:12px 14px;margin-bottom:14px;display:none;}
+.pbanner.show{display:block;}
+.pbtitle{font-family:'Orbitron',monospace;font-size:11px;color:var(--g);margin-bottom:5px;letter-spacing:0.07em;}
+.pbbody{font-size:12px;color:var(--tx);line-height:1.6;}
+.imgnote{margin-top:8px;padding:10px 12px;border:1px solid var(--by);background:var(--bg3);font-size:11px;line-height:1.7;color:var(--tx);}
+
+/* STATUSBAR */
+.sb{flex-shrink:0;height:24px;background:var(--y);color:var(--bg);font-family:'Orbitron',monospace;font-size:9px;font-weight:700;letter-spacing:0.07em;padding:0 12px;display:flex;justify-content:space-between;align-items:center;}
+.sbl{display:flex;align-items:center;gap:10px;}
+.sbm{background:var(--bg);color:var(--y);padding:0 6px;font-size:8px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--bg2);border:1px solid var(--c);color:var(--c);font-size:11px;letter-spacing:0.07em;padding:7px 18px;z-index:9000;opacity:0;transition:all 0.25s;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.ok{border-color:var(--g);color:var(--g);}
+.toast.warn{border-color:var(--y);color:var(--y);}
+.toast.err{border-color:var(--m);color:var(--m);}
+
+@media(max-width:768px){
+  .workspace{grid-template-columns:1fr;}
+  .pvcol{display:none;}
+  .fm-bar{grid-template-columns:1fr 1fr;}
+  .tbtn span{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-brand">
+    <div class="brand-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+    <span class="bname">XI//EDITOR</span><span class="btag">XIHACKS</span>
+  </div>
+  <div class="toolbar">
+    <button class="tbtn" onclick="ins('bold')">𝐁 BOLD</button>
+    <button class="tbtn" onclick="ins('italic')">𝐼 ITALIC</button>
+    <button class="tbtn" onclick="ins('strike')">S̶ STRIKE</button>
+    <button class="tbtn" onclick="ins('code')">`CODE`</button>
+    <div class="tsep"></div>
+    <button class="tbtn" onclick="ins('h1')">H1</button>
+    <button class="tbtn" onclick="ins('h2')">H2</button>
+    <button class="tbtn" onclick="ins('h3')">H3</button>
+    <div class="tsep"></div>
+    <button class="tbtn" onclick="ins('ul')">⁃ LIST</button>
+    <button class="tbtn" onclick="ins('ol')">1. LIST</button>
+    <button class="tbtn" onclick="ins('blockquote')">" QUOTE</button>
+    <button class="tbtn" onclick="ins('codeblock')">⌥ CODE BLOCK</button>
+    <button class="tbtn" onclick="ins('table')">⊞ TABLE</button>
+    <button class="tbtn" onclick="ins('hr')">── HR</button>
+    <div class="tsep"></div>
+    <button class="tbtn tc" onclick="ins('link')">🔗 LINK</button>
+    <button class="tbtn tc" onclick="toggleImgD()">🖼 IMAGES</button>
+    <div class="tsep"></div>
+    <button class="tbtn on" id="vsp" onclick="setView('s')">⫴ SPLIT</button>
+    <button class="tbtn" id="ved" onclick="setView('e')">✏ EDIT</button>
+    <button class="tbtn" id="vpr" onclick="setView('p')">👁 PREVIEW</button>
+    <div class="tsep"></div>
+    <button class="tbtn" onclick="loadFile()">📂 LOAD .MD</button>
+    <button class="tbtn tm" onclick="clearAll()">⌫ CLEAR</button>
+  </div>
+  <div class="tb-right">
+    <div class="tb-stat">
+      <div class="sdot"></div>
+      <span id="sv-s">AUTOSAVED</span>
+      <span style="color:var(--c)" id="sv-w">0W</span>
+    </div>
+    <button class="tbtn tg" onclick="openModal()" style="padding:0 18px;font-weight:700;letter-spacing:0.08em;border-left:1px solid var(--bc);">⬇ EXPORT &amp; PUBLISH</button>
+  </div>
+</div>
+
+<!-- FRONTMATTER -->
+<div class="fm-bar">
+  <div class="fmf">
+    <label class="fml">POST TITLE</label>
+    <input class="fmi" id="fm-t" placeholder="e.g. HTB Machine: Lame — Full Walkthrough" oninput="onTitle()"/>
+    <div class="slug-p" id="slg"></div>
+  </div>
+  <div class="fmf">
+    <label class="fml">DATE</label>
+    <input class="fmi" id="fm-d" type="date"/>
+  </div>
+  <div class="fmf">
+    <label class="fml">TAGS (comma separated)</label>
+    <input class="fmi" id="fm-tg" placeholder="ctf, hackthebox, linux, privesc"/>
+  </div>
+  <div class="fmf">
+    <label class="fml">EXCERPT</label>
+    <input class="fmi" id="fm-ex" placeholder="One-line summary for blog listing..."/>
+  </div>
+</div>
+
+<!-- WORKSPACE -->
+<div class="workspace" id="ws">
+  <div class="edcol">
+    <div class="colhead">
+      <span class="collbl">// MARKDOWN — CodeMirror 5</span>
+      <div class="colact">
+        <button class="cabtn" onclick="cm.execCommand('find')">FIND (Ctrl+F)</button>
+        <button class="cabtn" onclick="cm.execCommand('replace')">REPLACE</button>
+      </div>
+    </div>
+    <div class="cmwrap" id="cmwrap">
+      <textarea id="cmsrc" style="display:none;"></textarea>
+      <div class="doverlay" id="dov"><div class="doi">🖼</div><div class="dot2">DROP IMAGE TO INSERT</div></div>
+    </div>
+  </div>
+  <div class="pvcol">
+    <div class="colhead">
+      <span class="collbl">// LIVE PREVIEW — EXACT BLOG RENDER</span>
+      <div class="colact"><button class="cabtn" onclick="document.getElementById('pvs').scrollTop=0">⬆ TOP</button></div>
+    </div>
+    <div class="pvscroll" id="pvs">
+      <div id="pv"><div style="color:var(--dim);font-size:12px;text-align:center;padding:40px 0;letter-spacing:0.08em;">// START TYPING TO SEE PREVIEW</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- IMAGE DRAWER -->
+<div class="imgd" id="imgd">
+  <div class="idhead"><span class="idtitle">IMAGE MANAGER</span><button class="idclose" onclick="toggleImgD()">✕</button></div>
+  <div class="idup" id="idup">
+    <input type="file" id="imgfi" accept="image/*" multiple onchange="handleFiles(this.files)"/>
+    <span class="idup-icon">📎</span>
+    <div class="idup-txt"><em>Click</em> or drag images here<br><em>Ctrl+V</em> anywhere to paste screenshot</div>
+  </div>
+  <div class="idlist" id="idlist"><div class="idempty">No images yet.<br>Upload, drag, or Ctrl+V paste screenshots.</div></div>
+</div>
+
+<!-- EXPORT MODAL -->
+<div class="mbg" id="mbg">
+  <div class="modal">
+    <div class="mhead">
+      <span class="mtitle">⬇ PUBLISH — XIHACKS.COM</span>
+      <button class="mx" onclick="closeModal()">✕</button>
+    </div>
+    <div class="mbody">
+
+      <!-- PUBLISH BANNER -->
+      <div class="pbanner" id="pbn">
+        <div class="pbtitle">✓ POST READY TO PUBLISH</div>
+        <div class="pbbody" id="pbbd"></div>
+      </div>
+
+      <!-- VALIDATION WARNINGS -->
+      <div id="pub-warnings"></div>
+
+      <!-- THE ONE BIG BUTTON -->
+      <div style="margin:18px 0 10px;">
+        <button class="xbtn xy" id="pub-main-btn" onclick="publishZip()" style="width:100%;padding:14px;font-size:13px;letter-spacing:0.14em;display:flex;align-items:center;justify-content:center;gap:10px;">
+          <span>⬇</span><span id="pub-btn-label">DOWNLOAD PUBLISH PACKAGE (.zip)</span>
+        </button>
+        <div style="font-size:10px;color:var(--dim);text-align:center;margin-top:8px;letter-spacing:0.06em;" id="pub-btn-sub">
+          Downloads a zip with your .md file + updated manifest.json — just drag it into GitHub
+        </div>
+      </div>
+
+      <!-- WHAT'S IN THE ZIP -->
+      <div class="outlbl" style="margin-top:18px;">WHAT'S IN THE ZIP</div>
+      <div id="zip-contents" style="background:var(--bg3);border:1px solid var(--bc);padding:12px 14px;font-size:11px;line-height:2;font-family:'Share Tech Mono',monospace;margin-bottom:14px;"></div>
+
+      <!-- AFTER DOWNLOAD STEPS -->
+      <div class="outlbl">HOW TO PUBLISH — 3 STEPS</div>
+      <div class="pstep"><div class="pnum">1</div><div class="ptxt"><em>Unzip</em> the downloaded file — you'll find a <code>blog/</code> folder inside</div></div>
+      <div class="pstep"><div class="pnum">2</div><div class="ptxt">Go to your GitHub repo → <em>Add file → Upload files</em> → drag the <code>blog/</code> folder straight in</div></div>
+      <div class="pstep"><div class="pnum">3</div><div class="ptxt">Click <em>Commit changes</em> — Cloudflare Pages deploys in <em>~30 seconds ✓</em></div></div>
+      <div style="margin-top:10px;padding:8px 12px;background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);font-size:11px;color:var(--g);letter-spacing:0.05em;">
+        ✓ manifest.json is already merged inside the zip — no manual editing needed
+      </div>
+
+      <!-- IMAGE SECTION (shown only if images exist) -->
+      <div id="img-pub-section" style="display:none;margin-top:16px;">
+        <div class="outlbl">IMAGES — ALSO INCLUDED IN ZIP</div>
+        <div id="img-pub-list" style="background:var(--bg3);border:1px solid var(--by);padding:10px 14px;font-size:11px;line-height:1.9;font-family:'Share Tech Mono',monospace;color:var(--tx);"></div>
+      </div>
+
+      <!-- DIVIDER -->
+      <div style="height:1px;background:var(--bc);margin:20px 0;"></div>
+
+      <!-- ALSO AVAILABLE INDIVIDUALLY -->
+      <div class="outlbl">OR DOWNLOAD INDIVIDUALLY</div>
+      <div class="brow" style="margin-top:8px;">
+        <button class="xbtn xc" onclick="dlMD()">⬇ .MD FILE ONLY</button>
+        <button class="xbtn xc" onclick="dlManifest()">⬇ manifest.json ONLY</button>
+        <button class="xbtn xc" onclick="cpBox('exp-mf-hidden')">⎘ COPY MANIFEST ENTRY</button>
+      </div>
+      <div class="outbox" id="exp-mf-hidden" style="display:none;"></div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="sb">
+  <div class="sbl">
+    <span class="sbm">INSERT</span>
+    <span id="sbp">LN 1 · COL 1</span>
+    <span id="sbi" style="color:var(--dim);">Ctrl+S Save · Ctrl+E Export · Ctrl+F Find · Ctrl+V Paste Image</span>
+  </div>
+  <span id="sbc"></span>
+</div>
+
+<script>
+/* ── CODEMIRROR ── */
+const cm = CodeMirror(document.getElementById('cmwrap'), {
+  value: '',
+  mode: 'markdown',
+  theme: 'material-darker',
+  lineNumbers: true,
+  lineWrapping: true,
+  autofocus: true,
+  tabSize: 2,
+  indentWithTabs: false,
+  autoCloseBrackets: true,
+  matchBrackets: true,
+  scrollbarStyle: 'simple',
+  extraKeys: {
+    'Ctrl-B': () => ins('bold'),
+    'Ctrl-I': () => ins('italic'),
+    'Ctrl-K': () => ins('link'),
+    'Ctrl-S': () => { doSave(); toast('Saved!','ok'); },
+    'Ctrl-E': () => openModal(),
+    'Tab': c => c.execCommand('indentMore'),
+    'Shift-Tab': c => c.execCommand('indentLess'),
+    'Enter': 'newlineAndIndentContinueMarkdownList',
+  }
+});
+
+// Make CM fill container properly
+cm.getWrapperElement().style.cssText = 'flex:1;overflow:hidden;height:100%;';
+cm.refresh();
+
+let pvTimer, saveTimer;
+cm.on('change', () => { updateStats(); scheduleSave(); clearTimeout(pvTimer); pvTimer = setTimeout(renderPV, 100); });
+cm.on('cursorActivity', updateCursor);
+
+/* ── INIT ── */
+window.addEventListener('load', () => {
+  document.getElementById('fm-d').value = new Date().toISOString().slice(0,10);
+  try {
+    const d = JSON.parse(localStorage.getItem('xidraft') || 'null');
+    if (d) {
+      cm.setValue(d.c || '');
+      g('fm-t').value = d.t||''; g('fm-d').value = d.d||new Date().toISOString().slice(0,10);
+      g('fm-tg').value = d.tg||''; g('fm-ex').value = d.ex||'';
+      onTitle(); renderPV(); updateStats();
+      toast('Draft restored','ok');
+    }
+  } catch(e){}
+  tick(); setInterval(tick,1000);
+  // Force CM to recalculate height after layout
+  setTimeout(() => cm.refresh(), 200);
+});
+
+function g(id){ return document.getElementById(id); }
+
+/* ── CLOCK ── */
+function tick(){ g('sbc').textContent = new Date().toLocaleTimeString('en-GB',{hour12:false})+' | XI//EDITOR'; }
+
+function updateCursor(){
+  const c = cm.getCursor();
+  g('sbp').textContent = `LN ${c.line+1} · COL ${c.ch+1}`;
+}
+
+function updateStats(){
+  const txt = cm.getValue();
+  const w = txt.trim() ? txt.trim().split(/\s+/).length : 0;
+  g('sv-w').textContent = `${w}W · ${txt.split('\n').length}L`;
+}
+
+/* ── AUTOSAVE ── */
+function scheduleSave(){
+  clearTimeout(saveTimer);
+  g('sv-s').textContent='UNSAVED'; g('sv-s').style.color='var(--y)';
+  saveTimer = setTimeout(doSave, 1800);
+}
+function doSave(){
+  localStorage.setItem('xidraft', JSON.stringify({c:cm.getValue(),t:g('fm-t').value,d:g('fm-d').value,tg:g('fm-tg').value,ex:g('fm-ex').value}));
+  g('sv-s').textContent='AUTOSAVED'; g('sv-s').style.color='';
+}
+
+/* ── PREVIEW ── */
+function renderPV(){
+  let md = cm.getValue();
+  if(!md.trim()){ g('pv').innerHTML='<div style="color:var(--dim);font-size:12px;text-align:center;padding:40px 0;letter-spacing:0.08em;">// START TYPING TO SEE PREVIEW</div>'; return; }
+  marked.setOptions({breaks:true,gfm:true});
+  let html = marked.parse(md);
+  // Swap image paths with dataURLs for preview
+  imgs.forEach(img => {
+    [new RegExp(`src="images/[^/]+/${er(img.n)}"`, 'g'), new RegExp(`src="${er(img.n)}"`, 'g')]
+      .forEach(p => { html = html.replace(p, `src="${img.d}"`); });
+  });
+  g('pv').innerHTML = html;
+  g('pv').querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
+}
+function er(s){ return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
+
+/* ── FORMAT ── */
+function ins(type){
+  const doc = cm.getDoc();
+  const sel = doc.getSelection();
+  const cur = doc.getCursor();
+  const lineNum = cur.line;
+  const line = doc.getLine(lineNum);
+
+  function wrap(a,b,ph='text'){
+    if(sel) doc.replaceSelection(a+sel+b);
+    else { doc.replaceRange(a+ph+b,cur); doc.setCursor({line:lineNum,ch:cur.ch+a.length+ph.length}); }
+    cm.focus();
+  }
+  function pfx(p){
+    if(line.startsWith(p)) doc.replaceRange(line.slice(p.length),{line:lineNum,ch:0},{line:lineNum,ch:line.length});
+    else doc.replaceRange(p+line,{line:lineNum,ch:0},{line:lineNum,ch:line.length});
+    cm.focus();
+  }
+  function blk(txt){ doc.replaceRange('\n'+txt,{line:lineNum,ch:line.length}); cm.focus(); }
+
+  switch(type){
+    case 'bold':       wrap('**','**','bold text'); break;
+    case 'italic':     wrap('*','*','italic text'); break;
+    case 'strike':     wrap('~~','~~','strikethrough'); break;
+    case 'code':       wrap('`','`','code'); break;
+    case 'h1':         pfx('# '); break;
+    case 'h2':         pfx('## '); break;
+    case 'h3':         pfx('### '); break;
+    case 'ul':         pfx('- '); break;
+    case 'ol':         pfx('1. '); break;
+    case 'blockquote': pfx('> '); break;
+    case 'hr':         blk('\n---\n'); break;
+    case 'codeblock':  blk('\n```bash\n'+(sel||'# your code here')+'\n```\n'); break;
+    case 'table':      blk('\n| Column 1 | Column 2 | Column 3 |\n|----------|----------|----------|\n| Cell     | Cell     | Cell     |\n'); break;
+    case 'link': {
+      const url = prompt('URL:')||'https://';
+      wrap('[',`](${url})`,sel||'link text'); break;
+    }
+  }
+}
+
+/* ── IMAGES ── */
+let imgs = []; // {n:name, rp:repoPath, d:dataURL, sz:size}
+
+// Paste anywhere
+document.addEventListener('paste', e => {
+  const item = [...(e.clipboardData?.items||[])].find(i=>i.type.startsWith('image/'));
+  if(!item) return;
+  e.preventDefault();
+  procFile(item.getAsFile(), true);
+});
+
+// Drag onto editor wrapper
+const cmW = g('cmwrap');
+cmW.addEventListener('dragover', e => {
+  if([...e.dataTransfer.items].some(i=>i.type.startsWith('image/'))){
+    e.preventDefault(); g('dov').classList.add('show');
+  }
+});
+cmW.addEventListener('dragleave', () => g('dov').classList.remove('show'));
+cmW.addEventListener('drop', e => {
+  e.preventDefault(); g('dov').classList.remove('show');
+  [...e.dataTransfer.files].filter(f=>f.type.startsWith('image/')).forEach(f=>procFile(f,true));
+});
+
+// Upload zone
+const upz = g('idup');
+upz.addEventListener('dragover', e=>{e.preventDefault();upz.classList.add('over');});
+upz.addEventListener('dragleave', ()=>upz.classList.remove('over'));
+upz.addEventListener('drop', e=>{e.preventDefault();upz.classList.remove('over');handleFiles(e.dataTransfer.files);});
+
+function handleFiles(files){ [...files].filter(f=>f.type.startsWith('image/')).forEach(f=>procFile(f,false)); }
+
+function procFile(file, insertNow){
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const slug = toSlug(g('fm-t').value||'post');
+    const name = (file.name||`screenshot-${Date.now()}.png`).replace(/\s+/g,'-').toLowerCase();
+    const rp = `images/${slug}/${name}`;
+    const img = {n:name, rp, d:ev.target.result, sz:file.size};
+    imgs.push(img);
+    renderImgList();
+    if(insertNow){
+      const cur = cm.getCursor();
+      const line = cm.getDoc().getLine(cur.line);
+      cm.getDoc().replaceRange(`\n![${name}](${rp})\n`, {line:cur.line, ch:line.length});
+      cm.focus();
+    }
+    renderPV();
+    toast(`Image added: ${name}`,'ok');
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderImgList(){
+  const el = g('idlist');
+  if(!imgs.length){ el.innerHTML='<div class="idempty">No images yet.<br>Upload, drag, or Ctrl+V paste screenshots.</div>'; return; }
+  el.innerHTML = imgs.map((img,i)=>`
+    <div class="iditem" onclick="insImg(${i})">
+      <img class="idthumb" src="${img.d}" alt="${img.n}"/>
+      <div class="idinfo">
+        <div class="idname" title="${img.n}">${img.n}</div>
+        <div class="idsz">${(img.sz/1024).toFixed(1)} KB</div>
+        <div class="idhint">Click to insert ↵</div>
+      </div>
+      <button class="iddel" onclick="delImg(event,${i})">✕</button>
+    </div>`).join('');
+}
+
+function insImg(i){
+  const img = imgs[i];
+  const cur = cm.getCursor();
+  const line = cm.getDoc().getLine(cur.line);
+  cm.getDoc().replaceRange(`\n![${img.n}](${img.rp})\n`,{line:cur.line,ch:line.length});
+  cm.focus(); toast(`Inserted: ${img.n}`);
+}
+
+function delImg(e,i){ e.stopPropagation(); imgs.splice(i,1); renderImgList(); renderPV(); }
+function toggleImgD(){ g('imgd').classList.toggle('open'); }
+
+/* ── SLUG / FM ── */
+function toSlug(t){ return t.toLowerCase().replace(/[^a-z0-9\s-]/g,'').trim().replace(/\s+/g,'-').replace(/-+/g,'-').substring(0,60); }
+function onTitle(){ const s=toSlug(g('fm-t').value); g('slg').textContent=s?`→ blog/posts/${s}.md`:''; scheduleSave(); }
+function buildFM(){ return `---\ntitle: ${g('fm-t').value}\ndate: ${g('fm-d').value}\ntags: ${g('fm-tg').value}\nexcerpt: ${g('fm-ex').value}\n---\n\n`; }
+function buildMF(){
+  const slug=toSlug(g('fm-t').value);
+  const tags=g('fm-tg').value.split(',').map(t=>t.trim()).filter(Boolean);
+  return JSON.stringify({slug,title:g('fm-t').value,date:g('fm-d').value,tags,excerpt:g('fm-ex').value},null,2);
+}
+
+/* ── VIEW ── */
+function setView(m){
+  const ws=g('ws'); ws.className='workspace';
+  if(m==='e')ws.classList.add('fe');
+  if(m==='p')ws.classList.add('fp');
+  ['sp','ed','pr'].forEach((id,i)=>{ g('v'+['s','e','p'][i]).classList.toggle('on',['s','e','p'][i]===m); });
+  setTimeout(()=>cm.refresh(),50);
+}
+
+/* ── LOAD FILE ── */
+function loadFile(){
+  const inp=document.createElement('input'); inp.type='file'; inp.accept='.md,.txt';
+  inp.onchange=e=>{
+    const f=e.target.files[0], r=new FileReader();
+    r.onload=ev=>{
+      const raw=ev.target.result; cm.setValue(raw);
+      if(raw.startsWith('---')){
+        const end=raw.indexOf('---',3);
+        if(end!==-1) raw.slice(3,end).trim().split('\n').forEach(l=>{
+          const [k,...vv]=l.split(':'), val=vv.join(':').trim();
+          if(k.trim()==='title') g('fm-t').value=val;
+          if(k.trim()==='date') g('fm-d').value=val;
+          if(k.trim()==='tags') g('fm-tg').value=val;
+          if(k.trim()==='excerpt') g('fm-ex').value=val;
+        });
+        onTitle();
+      }
+      renderPV(); updateStats(); toast(`Loaded: ${f.name}`,'ok');
+    };
+    r.readAsText(f);
+  };
+  inp.click();
+}
+
+function clearAll(){
+  if(!confirm('Clear everything?')) return;
+  cm.setValue('');
+  ['fm-t','fm-tg','fm-ex'].forEach(id=>g(id).value='');
+  g('fm-d').value=new Date().toISOString().slice(0,10);
+  g('slg').textContent='';
+  imgs=[]; renderImgList(); renderPV();
+  localStorage.removeItem('xidraft');
+  toast('Cleared','warn');
+}
+
+/* ── PUBLISH MODAL ── */
+function openModal(){
+  const slug = toSlug(g('fm-t').value||'post');
+  const title = g('fm-t').value;
+  const date  = g('fm-d').value;
+  const tags  = g('fm-tg').value;
+  const excerpt = g('fm-ex').value;
+  const fullMd  = buildFM() + cm.getValue();
+  const entry   = buildMF();
+
+  // Hidden copy box
+  g('exp-mf-hidden').textContent = entry;
+
+  // Warnings
+  const warns = [];
+  if(!title)   warns.push('⚠ No title — add one in the frontmatter bar');
+  if(!excerpt) warns.push('⚠ No excerpt — it shows in blog listing');
+  if(!cm.getValue().trim()) warns.push('⚠ Post body is empty');
+  const wEl = g('pub-warnings');
+  wEl.innerHTML = warns.map(w =>
+    `<div style="background:rgba(255,0,60,0.07);border:1px solid rgba(255,0,60,0.25);padding:7px 12px;font-size:11px;color:var(--m);margin-bottom:6px;letter-spacing:0.05em;">${w}</div>`
+  ).join('');
+
+  // Banner
+  if(title && excerpt){
+    g('pbn').classList.add('show');
+    g('pbbd').innerHTML = `<span style="color:var(--y);">${title}</span><br>` +
+      `<span style="color:var(--c);">blog/posts/${slug}.md</span> · ${date} · ${tags||'no tags'}`;
+  } else {
+    g('pbn').classList.remove('show');
+  }
+
+  // Zip contents preview
+  let zipLines = [
+    `<span style="color:var(--c);">blog/posts/${slug}.md</span>  <span style="color:var(--dim);">← your post</span>`,
+    `<span style="color:var(--y);">blog/posts/manifest.json</span>  <span style="color:var(--dim);">← auto-updated, includes this post</span>`,
+  ];
+  if(imgs.length){
+    imgs.forEach(im => zipLines.push(
+      `<span style="color:var(--g);">blog/posts/images/${slug}/${im.n}</span>  <span style="color:var(--dim);">← image</span>`
+    ));
+  }
+  g('zip-contents').innerHTML = zipLines.join('<br>');
+
+  // Image section
+  if(imgs.length){
+    g('img-pub-section').style.display = 'block';
+    g('img-pub-list').innerHTML = imgs.map(im =>
+      `<span style="color:var(--g);">✓</span> ${im.n} <span style="color:var(--dim);">(${(im.sz/1024).toFixed(1)}KB)</span>`
+    ).join('<br>');
+  } else {
+    g('img-pub-section').style.display = 'none';
+  }
+
+  g('mbg').classList.add('open');
+}
+
+async function publishZip(){
+  const btn = g('pub-main-btn');
+  const lbl = g('pub-btn-label');
+  const slug = toSlug(g('fm-t').value||'post');
+
+  // Button feedback
+  btn.disabled = true;
+  lbl.textContent = 'BUILDING ZIP...';
+
+  try {
+    const zip = new JSZip();
+    const postsFolder = zip.folder('blog').folder('posts');
+
+    // 1. Add the .md file
+    const fullMd = buildFM() + cm.getValue();
+    postsFolder.file(`${slug}.md`, fullMd);
+
+    // 2. Fetch existing manifest.json from the repo, merge, write back
+    let existingPosts = [];
+    try {
+      // Try to load the live manifest from same-origin (works when hosted on GitHub Pages)
+      const res = await fetch(`../blog/posts/manifest.json?v=${Date.now()}`);
+      if(res.ok) existingPosts = await res.json();
+    } catch(e){
+      // Offline or different origin — start fresh, user will upload over it
+    }
+
+    // Build new entry
+    const newEntry = {
+      slug,
+      title:   g('fm-t').value,
+      date:    g('fm-d').value,
+      tags:    g('fm-tg').value.split(',').map(t=>t.trim()).filter(Boolean),
+      excerpt: g('fm-ex').value,
+    };
+
+    // Merge: replace existing entry with same slug, or add new
+    const existing = existingPosts.filter(p => p.slug !== slug);
+    const merged   = [newEntry, ...existing]
+      .sort((a,b) => new Date(b.date) - new Date(a.date));
+
+    postsFolder.file('manifest.json', JSON.stringify(merged, null, 2));
+
+    // 3. Add images as real files inside the zip
+    if(imgs.length){
+      const imgFolder = postsFolder.folder('images').folder(slug);
+      for(const img of imgs){
+        // dataURL → binary
+        const base64 = img.d.split(',')[1];
+        imgFolder.file(img.n, base64, {base64: true});
+      }
+    }
+
+    // 4. Generate and download
+    const blob = await zip.generateAsync({type:'blob', compression:'DEFLATE'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `publish-${slug}.zip`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+
+    toast(`publish-${slug}.zip downloaded — drag it into GitHub!`, 'ok');
+    lbl.textContent = '✓ DOWNLOADED — DRAG INTO GITHUB';
+    g('pub-btn-sub').textContent = `publish-${slug}.zip is in your Downloads folder`;
+    g('pub-btn-sub').style.color = 'var(--g)';
+
+    setTimeout(()=>{
+      btn.disabled = false;
+      lbl.textContent = 'DOWNLOAD PUBLISH PACKAGE (.zip)';
+      g('pub-btn-sub').textContent = 'Downloads a zip with your .md file + updated manifest.json — just drag it into GitHub';
+      g('pub-btn-sub').style.color = '';
+    }, 4000);
+
+  } catch(err){
+    toast('Zip failed: ' + err.message, 'err');
+    btn.disabled = false;
+    lbl.textContent = 'DOWNLOAD PUBLISH PACKAGE (.zip)';
+  }
+}
+
+function closeModal(){ g('mbg').classList.remove('open'); }
+g('mbg').addEventListener('click', e=>{ if(e.target===g('mbg')) closeModal(); });
+
+function dlMD(){
+  const slug=toSlug(g('fm-t').value||'post');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([buildFM()+cm.getValue()],{type:'text/markdown'}));
+  a.download=`${slug}.md`; a.click();
+  toast(`Downloaded: ${slug}.md`,'ok');
+}
+
+async function dlManifest(){
+  const slug = toSlug(g('fm-t').value||'post');
+  let existingPosts = [];
+  try {
+    const res = await fetch(`../blog/posts/manifest.json?v=${Date.now()}`);
+    if(res.ok) existingPosts = await res.json();
+  } catch(e){}
+  const newEntry = {
+    slug,
+    title:   g('fm-t').value,
+    date:    g('fm-d').value,
+    tags:    g('fm-tg').value.split(',').map(t=>t.trim()).filter(Boolean),
+    excerpt: g('fm-ex').value,
+  };
+  const merged = [newEntry, ...existingPosts.filter(p=>p.slug!==slug)]
+    .sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(merged,null,2)],{type:'application/json'}));
+  a.download='manifest.json'; a.click();
+  toast('Downloaded full manifest.json','ok');
+}
+
+function dlImg(i){
+  const img=imgs[i], a=document.createElement('a');
+  a.href=img.d; a.download=img.n; a.click();
+  toast(`Downloaded: ${img.n}`,'ok');
+}
+
+function cpBox(id){ navigator.clipboard.writeText(g(id).textContent).then(()=>toast('Copied!','ok')); }
+
+// Keep setTab as no-op for backwards compat
+function setTab(){}
+
+/* ── TOAST ── */
+let toastT;
+function toast(msg,type=''){
+  const el=g('toast'), icons={ok:'✓ ',warn:'⚠ ',err:'✕ '};
+  el.textContent=(icons[type]||'→ ')+msg; el.className=`toast show ${type}`;
+  clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('show'),2200);
+}
+
+document.addEventListener('keydown', e=>{ if((e.ctrlKey||e.metaKey)&&e.key==='e'){e.preventDefault();openModal();} });
+</script>
+</body>
+</html>
