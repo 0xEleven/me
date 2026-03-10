@@ -1,5 +1,17 @@
 [
   {
+    "slug": "bounty-hunter",
+    "title": "Bounty Hunter",
+    "date": "2026-03-10",
+    "tags": [
+      "ctf",
+      "hackthebox",
+      "easy",
+      "XXE"
+    ],
+    "excerpt": "XXE Injection, EVAl Injection, Bounty Hunting"
+  },
+  {
     "slug": "blue",
     "title": "Blue",
     "date": "2026-03-10",
