@@ -1,5 +1,15 @@
 [
   {
+    "slug": "lame",
+    "title": "Lame",
+    "date": "2026-03-10",
+    "tags": [
+      "hackthebox",
+      "easy",
+      "CVE"
+    ],
+    "excerpt": "VSFTPD v2.3.4 Backdoor Command Execution"
+  },{
     "slug": "welcome-to-xihacks",
     "title": "Welcome to XIHacks — My Cyber Lab Notes",
     "date": "2025-03-10",
