@@ -1021,45 +1021,26 @@ function setSP(id, btn){
 async function buildThreatFeed(){
   const el = document.getElementById('threat-feed');
   if(!el) return;
-  el.innerHTML = '<div style="color:var(--dim);font-size:11px;padding:6px 0;letter-spacing:0.07em;">// QUERYING CISA KEV...</div>';
-  const KEV = 'https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json';
-  const proxies = [
-    // allorigins /get wraps response in {contents:'json string'}
-    `https://api.allorigins.win/get?url=${encodeURIComponent(KEV)}`,
-    // allorigins /raw returns directly
-    `https://api.allorigins.win/raw?url=${encodeURIComponent(KEV)}`,
-    // thingproxy
-    `https://thingproxy.freeboard.io/fetch/${KEV}`,
-  ];
-  let vulns = null;
-  for(const p of proxies){
-    try{
-      const r = await fetch(p, {signal: AbortSignal.timeout(8000)});
-      if(!r.ok) continue;
-      const raw = await r.json();
-      // allorigins /get nests data in .contents as a string
-      const data = (typeof raw.contents === 'string') ? JSON.parse(raw.contents) : raw;
-      if(data && Array.isArray(data.vulnerabilities)){ vulns = data.vulnerabilities; break; }
-    }catch(_){ continue; }
+  el.innerHTML = '<div style="color:var(--dim);font-size:11px;padding:6px 0;">// LOADING KEV...</div>';
+  try {
+    const res = await fetch('data/kev.json');
+    if(!res.ok) throw new Error();
+    const data = await res.json();
+    const recent = data.vulnerabilities
+      .sort((a,b) => new Date(b.dateAdded) - new Date(a.dateAdded))
+      .slice(0, 6);
+    el.innerHTML = recent.map(v => `
+      <div class="threat-item">
+        <span class="threat-sev sev-crit">KEV</span>
+        <span class="threat-txt"><b style="color:var(--cyan)">${v.cveID}</b> — ${v.vulnerabilityName}</span>
+        <span class="threat-time">${v.dateAdded}</span>
+      </div>`).join('');
+  } catch(e){
+    el.innerHTML = '<div style="color:var(--dim);font-size:11px;padding:6px 0;">// kev.json not found — run workflow</div>';
   }
-  if(!vulns){
-    el.innerHTML = `<div style="font-size:11px;line-height:1.9;padding:4px 0;">
-      <span style="color:var(--yellow);">[BLOCKED]</span> <span style="color:var(--dim);">CORS prevents direct fetch.</span><br>
-      <a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank"
-        style="color:var(--cyan);letter-spacing:0.06em;font-size:10px;">▸ OPEN CISA KEV CATALOG ↗</a>
-    </div>`;
-    return;
-  }
-  const recent = vulns.sort((a,b)=>new Date(b.dateAdded)-new Date(a.dateAdded)).slice(0,6);
-  el.innerHTML = recent.map(v=>`
-    <div class="threat-item">
-      <span class="threat-sev sev-crit">KEV</span>
-      <span class="threat-txt"><b style="color:var(--cyan)">${v.cveID}</b> — ${v.vulnerabilityName}</span>
-      <span class="threat-time">${v.dateAdded}</span>
-    </div>`).join('');
 }
 buildThreatFeed();
-setInterval(buildThreatFeed, 300000); // refresh every 5 min
+setInterval(buildThreatFeed, 3600000); // re-check hourly (picks up new deploy)
 
 // Load home posts immediately
 loadHomePosts();
